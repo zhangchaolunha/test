@@ -1,0 +1,72 @@
+[
+  {
+    "id": "antimage",
+    "name": "敌法师",
+    "image": "./assets/heroes/antimage.svg",
+    "hint": "敏捷型近战英雄，擅长闪烁切入并克制魔法。",
+    "roast": "你与正确答案之间，只差一次闪烁。"
+  },
+  {
+    "id": "invoker",
+    "name": "祈求者",
+    "image": "./assets/heroes/invoker.svg",
+    "hint": "智力型远程英雄，通过三种元素组合大量法术。",
+    "roast": "十个技能很难记，但这张脸应该不难。"
+  },
+  {
+    "id": "shadow_fiend",
+    "name": "影魔",
+    "image": "./assets/heroes/shadow_fiend.svg",
+    "hint": "敏捷型远程英雄，以收集灵魂和三连影压闻名。",
+    "roast": "三道影压都没压中你的记忆。"
+  },
+  {
+    "id": "axe",
+    "name": "斧王",
+    "image": "./assets/heroes/axe.svg",
+    "hint": "力量型近战英雄，喜欢冲入人群并强迫敌人攻击自己。",
+    "roast": "斧王已经吼了，你的答案还没转起来。"
+  },
+  {
+    "id": "pudge",
+    "name": "帕吉",
+    "image": "./assets/heroes/pudge.svg",
+    "hint": "力量型近战英雄，最经典的技能是一根能拖回敌人的钩子。",
+    "roast": "这身材都没认出来，建议少在泉水挂机。"
+  },
+  {
+    "id": "phantom_assassin",
+    "name": "幻影刺客",
+    "image": "./assets/heroes/phantom_assassin.svg",
+    "hint": "敏捷型近战核心，擅长突进并打出致命暴击。",
+    "roast": "模糊确实是她的特长，不是你的借口。"
+  },
+  {
+    "id": "drow_ranger",
+    "name": "卓尔游侠",
+    "image": "./assets/heroes/drow_ranger.svg",
+    "hint": "敏捷型远程英雄，以冰霜箭矢和精准射击闻名。",
+    "roast": "至少你最终发现，她并不是风行者。"
+  },
+  {
+    "id": "crystal_maiden",
+    "name": "水晶室女",
+    "image": "./assets/heroes/crystal_maiden.svg",
+    "hint": "智力型远程辅助，技能与冰霜有关，并为全队提供魔法恢复。",
+    "roast": "她走得很慢，但你的答案来得更慢。"
+  },
+  {
+    "id": "lina",
+    "name": "莉娜",
+    "image": "./assets/heroes/lina.svg",
+    "hint": "智力型远程英雄，红发、火焰与高爆发是她的标志。",
+    "roast": "这么大的火光，都没照亮正确答案。"
+  },
+  {
+    "id": "windranger",
+    "name": "风行者",
+    "image": "./assets/heroes/windranger.svg",
+    "hint": "敏捷型远程英雄，绿色兜帽、弓箭和风系能力十分醒目。",
+    "roast": "风已经指明方向，你还是射偏了。"
+  }
+]
