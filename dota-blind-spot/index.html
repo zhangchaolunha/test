@@ -83,13 +83,14 @@
     async function boot(){
       try{
         const v=Date.now();
-        const [manifestRes,spriteRes]=await Promise.all([
-          fetch('./assets/heroes.json?v='+v),
-          fetch('./assets/heroes-batch-02.b64?v='+v)
-        ]);
-        if(!manifestRes.ok||!spriteRes.ok)throw new Error('assets');
+        const manifestRes=await fetch('./assets/heroes.json?v='+v);
+        const spriteResponses=await Promise.all(
+          Array.from({length:6},(_,i)=>fetch(`./assets/heroes-batch-02.part${i+1}.b64?v=${v}`))
+        );
+        if(!manifestRes.ok||spriteResponses.some(res=>!res.ok))throw new Error('assets');
         pool=await manifestRes.json();
-        spriteUrl='data:image/webp;base64,'+(await spriteRes.text()).trim();
+        const spriteParts=await Promise.all(spriteResponses.map(res=>res.text()));
+        spriteUrl='data:image/webp;base64,'+spriteParts.map(part=>part.trim()).join('');
         if(pool.length<GAME_SIZE)throw new Error('pool');
         $('poolSize').textContent=pool.length;
         startSession();
