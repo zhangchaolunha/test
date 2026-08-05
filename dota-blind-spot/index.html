@@ -22,7 +22,7 @@
     .game{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(330px,.75fr);gap:14px}.card{overflow:hidden;border:1px solid var(--line);border-radius:14px;background:rgba(18,21,24,.9);box-shadow:var(--shadow)}.head{height:58px;padding:0 17px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);background:rgba(255,255,255,.015)}.head h2{margin:0;font-size:15px}.bars{display:flex;gap:4px}.bars i{width:16px;height:4px;border-radius:4px;background:#34383c}.bars i.on{background:var(--red);box-shadow:0 0 10px rgba(207,73,54,.4)}
     .stage{position:relative;height:520px;overflow:hidden;isolation:isolate;background:#090b0c;cursor:default}.backdrop,.portrait-frame{position:absolute;left:50%;top:50%;height:100%;aspect-ratio:4/3;max-width:100%;transform:translate(-50%,-50%)}.backdrop{z-index:0;background-repeat:no-repeat;background-position:center;background-size:contain;filter:blur(23px) brightness(.36) saturate(.8);transform:translate(-50%,-50%) scale(1.16)}.portrait-frame{z-index:1}.portrait{width:100%;height:100%;background-repeat:no-repeat;background-position:center;background-size:contain;filter:saturate(.98) contrast(1.05) brightness(1.08)}.shade{position:absolute;inset:0;z-index:2;background:linear-gradient(90deg,rgba(5,7,8,.48),transparent 25%,transparent 75%,rgba(5,7,8,.48)),linear-gradient(180deg,transparent 65%,rgba(5,7,8,.62));pointer-events:none}
     .fog{position:absolute;inset:0;z-index:3;pointer-events:none;background:radial-gradient(ellipse at 15% 30%,rgba(128,140,144,.17),transparent 34%),radial-gradient(ellipse at 85% 68%,rgba(112,123,128,.14),transparent 31%),rgba(4,6,7,.975);-webkit-mask-image:radial-gradient(circle at var(--fog-x) var(--fog-y),transparent 0,transparent var(--reveal),rgba(0,0,0,.22) calc(var(--reveal) + 9px),rgba(0,0,0,.88) calc(var(--reveal) + 32px),#000 calc(var(--reveal) + 74px));mask-image:radial-gradient(circle at var(--fog-x) var(--fog-y),transparent 0,transparent var(--reveal),rgba(0,0,0,.22) calc(var(--reveal) + 9px),rgba(0,0,0,.88) calc(var(--reveal) + 32px),#000 calc(var(--reveal) + 74px));-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-size:100% 100%;mask-size:100% 100%;will-change:mask-image,-webkit-mask-image}.fog:after{content:"";position:absolute;inset:0;opacity:.25;background:radial-gradient(circle at 20% 50%,rgba(190,199,201,.2),transparent 24%),radial-gradient(circle at 75% 30%,rgba(150,160,164,.16),transparent 28%);filter:blur(28px);animation:drift 12s ease-in-out infinite alternate}@keyframes drift{to{transform:translate(5%,-3%) scale(1.15)}}
-    .scope{position:absolute;z-index:4;left:var(--fog-x);top:var(--fog-y);width:calc(var(--reveal)*2 + 12px);height:calc(var(--reveal)*2 + 12px);transform:translate(-50%,-50%);border:1px solid rgba(216,181,106,.3);border-radius:50%;box-shadow:inset 0 0 20px rgba(216,181,106,.06);pointer-events:none;transition:.35s ease}.scope:before,.scope:after{content:"";position:absolute;background:rgba(216,181,106,.24)}.scope:before{width:1px;height:20px;left:50%;top:-10px}.scope:after{height:1px;width:20px;top:50%;left:-10px}
+    .scope{position:absolute;z-index:4;left:var(--fog-x);top:var(--fog-y);width:calc(var(--reveal)*2 + 12px);height:calc(var(--reveal)*2 + 12px);transform:translate(-50%,-50%);border:1px solid rgba(216,181,106,.3);border-radius:50%;box-shadow:inset 0 0 20px rgba(216,181,106,.06);pointer-events:none;transition:left .32s ease,top .32s ease,width .32s ease,height .32s ease}.scope:before,.scope:after{content:"";position:absolute;background:rgba(216,181,106,.24)}.scope:before{width:1px;height:20px;left:50%;top:-10px}.scope:after{height:1px;width:20px;top:50%;left:-10px}
     .visible{position:absolute;z-index:5;left:16px;bottom:15px;display:flex;gap:10px;align-items:center;font-size:11px;color:#c4c8ca}.visible b{font-size:22px;color:var(--gold)}.foot{min-height:54px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--line);color:#80878b;font-size:12px}.dots{display:flex;gap:7px}.dots i{width:9px;height:9px;border:1px solid #555d61;border-radius:50%}.dots i.used{border-color:var(--red);background:var(--red);box-shadow:0 0 9px rgba(207,73,54,.42)}
     .answer{padding:16px}.type{color:#d1b77d;font-size:11px;font-weight:700;letter-spacing:.08em}.prompt{margin:10px 0 14px;font:20px/1.45 Georgia,serif}.options{display:grid;gap:8px}.option{min-height:48px;width:100%;padding:0 13px;display:flex;align-items:center;justify-content:space-between;color:#d8dcde;text-align:left;border:1px solid rgba(255,255,255,.08);border-radius:9px;background:linear-gradient(180deg,rgba(255,255,255,.025),rgba(255,255,255,.01));cursor:pointer;transition:.18s}.option:hover{transform:translateY(-1px);border-color:rgba(216,181,106,.42);background:rgba(216,181,106,.06)}.option.wrong{color:#ed9487;border-color:rgba(207,73,54,.6);background:rgba(207,73,54,.1)}.option.correct{color:#a8dfb3;border-color:rgba(117,183,132,.7);background:rgba(117,183,132,.12)}.option kbd{width:25px;height:25px;display:grid;place-items:center;color:#747b7f;border:1px solid rgba(255,255,255,.09);border-radius:6px;background:rgba(0,0,0,.18);font-size:10px}.hint{min-height:58px;margin-top:12px;padding:11px 12px;color:#999fa2;border:1px dashed rgba(216,181,106,.22);border-radius:9px;background:rgba(216,181,106,.035);font-size:12px;line-height:1.55}.hint b{color:#d7c18f}.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.btn{min-height:44px;color:#c8ccce;border:1px solid rgba(255,255,255,.09);border-radius:8px;background:#191d20;cursor:pointer}.btn.primary{color:#fff;border-color:rgba(207,73,54,.46);background:linear-gradient(180deg,#ae3527,#762017)}.btn:disabled{opacity:.45;cursor:default}
     .toast{position:fixed;z-index:50;left:50%;bottom:26px;padding:12px 16px;transform:translate(-50%,18px);opacity:0;color:#eee;border:1px solid var(--line);border-radius:10px;background:rgba(18,21,24,.97);box-shadow:var(--shadow);transition:.22s;pointer-events:none;font-size:13px}.toast.show{opacity:1;transform:translate(-50%,0)}.modal{position:fixed;z-index:60;inset:0;padding:18px;display:grid;place-items:center;opacity:0;pointer-events:none;background:rgba(2,3,4,.78);backdrop-filter:blur(8px);transition:.22s}.modal.show{opacity:1;pointer-events:auto}.result{width:min(540px,100%);overflow:hidden;border:1px solid rgba(216,181,106,.25);border-radius:16px;background:linear-gradient(180deg,#202428,#101315);box-shadow:0 40px 120px rgba(0,0,0,.66)}.result-img{height:300px;width:100%;background-color:#080a0b;background-repeat:no-repeat;background-position:center;background-size:contain}.result-body{padding:20px;text-align:center}.kicker{color:var(--green);font-size:11px;letter-spacing:.16em}.result h3{margin:7px 0 6px;font:700 34px Georgia,serif}.result p{margin:0 auto 16px;max-width:430px;color:#99a0a4;font-size:13px;line-height:1.7}.stats{display:grid;grid-template-columns:repeat(3,1fr);margin-bottom:14px;border:1px solid var(--line);border-radius:10px;overflow:hidden}.stats div{padding:10px 5px;border-right:1px solid var(--line)}.stats div:last-child{border:0}.stats span{display:block;color:#777e82;font-size:10px}.stats strong{display:block;margin-top:3px;font-size:18px}.end{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;max-width:330px;margin:14px auto 18px}.end span{height:42px;display:grid;place-items:center;border:1px solid rgba(117,183,132,.28);border-radius:8px;background:rgba(117,183,132,.12);color:#9dd3a7;font-weight:800}.legal{text-align:center;padding:17px 0 0;color:#5d6468;font-size:10px}
@@ -36,14 +36,14 @@
       <nav class="nav"><span class="active">每日挑战</span><span>无尽模式</span><span>好友房</span><span class="avatar">先</span></nav>
     </header>
     <section class="intro">
-      <div><div class="eyebrow">DAILY CHALLENGE · #003</div><h1>你真的认得<br>这些英雄吗？</h1><p>每次从英雄池随机抽取 5 名英雄，本局内不会重复。每关随机生成一处更小的可视区域，位置生成后立即锁定，只能通过猜测逐步扩大视野。</p></div>
+      <div><div class="eyebrow">DAILY CHALLENGE · #004</div><h1>你真的认得<br>这些英雄吗？</h1><p>每次从英雄池随机抽取 5 名英雄，本局内不会重复。视野只会出现在一组分散的离散点位中；每次答错都会扩大视野，并自动跳转到另一个距离更远的点位，玩家不能手动修改。</p></div>
       <div class="daily"><span>本期英雄池</span><strong id="poolSize">30</strong></div>
     </section>
     <section class="hud"><div><span>题目进度</span><strong id="progress">1 / 5</strong></div><div><span>当前得分</span><strong class="gold" id="score">1,000</strong></div><div><span>连续答对</span><strong id="streak">0</strong></div><div><span>剩余时间</span><strong class="red" id="timer">45s</strong></div></section>
     <section class="game">
       <article class="card"><div class="head"><h2>战争迷雾视野</h2><div class="bars"><i class="on"></i><i class="on"></i><i class="on"></i><i></i></div></div>
-        <div class="stage" id="stage"><div class="backdrop" id="backdrop"></div><div class="portrait-frame"><div class="portrait" id="portrait"></div></div><div class="shade"></div><div class="fog"></div><div class="scope"></div><div class="visible"><b id="visible">02%</b><span>当前可见视野<br>本题随机位置已锁定</span></div></div>
-        <div class="foot"><span>猜错一次，战争迷雾自动消退一层</span><div class="dots" id="dots"></div></div>
+        <div class="stage" id="stage"><div class="backdrop" id="backdrop"></div><div class="portrait-frame"><div class="portrait" id="portrait"></div></div><div class="shade"></div><div class="fog"></div><div class="scope"></div><div class="visible"><b id="visible">02%</b><span>当前可见视野<br>点位仅由系统自动切换</span></div></div>
+        <div class="foot"><span>猜错一次，视野扩大并切换到另一处迷雾点位</span><div class="dots" id="dots"></div></div>
       </article>
       <aside class="card"><div class="head"><h2>作出判断</h2><span id="attemptLabel" style="color:#747b7f;font-size:11px">第 1 次猜测</span></div><div class="answer"><div class="type">● 英雄辨识</div><div class="prompt">迷雾中是哪一位英雄？</div><div class="options" id="options"></div><div class="hint" id="hint"><b>先知提示：</b>暂未使用真视。越早答对，分数越高。</div><div class="actions"><button class="btn" id="hintBtn">使用真视 −120</button><button class="btn primary" id="skipBtn">放弃并揭晓</button></div></div></aside>
     </section>
@@ -56,7 +56,13 @@
     const SPRITE_COLS=5,SPRITE_ROWS=4;
     const REVEAL=[30,46,70,104,150,560];
     const VISIBLE=['02%','05%','11%','22%','40%','100%'];
-    let pool=[],rounds=[],round=0,attempt=0,currentScore=1000,totalScore=0,streak=0,seconds=45,timer=null,hintUsed=false,answered=false,results=[],spriteUrl='';
+    const FOG_POINTS=[
+      {x:18,y:19},{x:50,y:17},{x:82,y:19},
+      {x:21,y:48},{x:50,y:47},{x:79,y:48},
+      {x:18,y:77},{x:50,y:79},{x:82,y:77},
+      {x:34,y:31},{x:66,y:31},{x:34,y:66},{x:66,y:66}
+    ];
+    let pool=[],rounds=[],round=0,attempt=0,currentScore=1000,totalScore=0,streak=0,seconds=45,timer=null,hintUsed=false,answered=false,results=[],spriteUrl='',currentFogPoint=null;
     const $=id=>document.getElementById(id),root=document.documentElement;
     const shuffle=list=>{const a=[...list];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
     function pickUniqueNames(list,count,excludedName=''){
@@ -68,6 +74,19 @@
       }
       return out;
     }
+    function pickFogPoint(previous=null){
+      const candidates=previous
+        ?FOG_POINTS.filter(point=>Math.hypot(point.x-previous.x,point.y-previous.y)>=38)
+        :FOG_POINTS;
+      const source=candidates.length?candidates:FOG_POINTS.filter(point=>point!==previous);
+      return source[Math.floor(Math.random()*source.length)];
+    }
+    function setFogPoint(point){
+      currentFogPoint=point;
+      root.style.setProperty('--fog-x',point.x+'%');
+      root.style.setProperty('--fog-y',point.y+'%');
+    }
+    function moveFogPoint(){setFogPoint(pickFogPoint(currentFogPoint))}
     function applyVisual(el,q){
       if(Number.isInteger(q.spriteIndex)){
         const col=q.spriteIndex%SPRITE_COLS,row=Math.floor(q.spriteIndex/SPRITE_COLS);
@@ -102,8 +121,7 @@
     function startSession(){rounds=pickUniqueNames(pool,GAME_SIZE);round=0;totalScore=0;streak=0;results=[];renderRound()}
     function renderRound(){
       const q=rounds[round];attempt=0;currentScore=1000;seconds=45;hintUsed=false;answered=false;
-      const fogX=(32+Math.random()*36).toFixed(1),fogY=(28+Math.random()*34).toFixed(1);
-      root.style.setProperty('--reveal',REVEAL[0]+'px');root.style.setProperty('--fog-x',fogX+'%');root.style.setProperty('--fog-y',fogY+'%');
+      root.style.setProperty('--reveal',REVEAL[0]+'px');setFogPoint(pickFogPoint());
       applyVisual($('backdrop'),q);applyVisual($('portrait'),q);
       $('progress').textContent=`${round+1} / ${GAME_SIZE}`;$('score').textContent='1,000';$('streak').textContent=streak;$('timer').textContent='45s';$('visible').textContent=VISIBLE[0];$('attemptLabel').textContent='第 1 次猜测';$('hint').innerHTML='<b>先知提示：</b>暂未使用真视。越早答对，分数越高。';$('hintBtn').disabled=false;$('skipBtn').disabled=false;
       renderDots();renderOptions(q);clearInterval(timer);timer=setInterval(tick,1000);
@@ -120,7 +138,7 @@
       const q=rounds[round];
       if(id===q.id){btn.classList.add('correct');finish(true,false);return}
       attempt++;currentScore=Math.max(100,currentScore-150);btn.classList.add('wrong');btn.disabled=true;
-      const lv=Math.min(attempt,REVEAL.length-1);root.style.setProperty('--reveal',REVEAL[lv]+'px');$('visible').textContent=VISIBLE[lv];$('score').textContent=currentScore.toLocaleString();$('attemptLabel').textContent=`第 ${Math.min(attempt+1,5)} 次猜测`;renderDots();toast('回答错误，战争迷雾正在消退。');if(attempt>=5)setTimeout(()=>finish(false,false),400);
+      const lv=Math.min(attempt,REVEAL.length-1);root.style.setProperty('--reveal',REVEAL[lv]+'px');moveFogPoint();$('visible').textContent=VISIBLE[lv];$('score').textContent=currentScore.toLocaleString();$('attemptLabel').textContent=`第 ${Math.min(attempt+1,5)} 次猜测`;renderDots();toast('回答错误，视野扩大并转移到新的迷雾点位。');if(attempt>=5)setTimeout(()=>finish(false,false),400);
     }
     function useHint(){if(hintUsed||answered)return;hintUsed=true;currentScore=Math.max(100,currentScore-120);$('score').textContent=currentScore.toLocaleString();$('hint').innerHTML=`<b>真视生效：</b>${rounds[round].hint}`;$('hintBtn').disabled=true;toast('真视已开启，本题扣除 120 分。')}
     function finish(correct,timedOut){
