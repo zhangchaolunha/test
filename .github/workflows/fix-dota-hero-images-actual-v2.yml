@@ -1,5 +1,4 @@
-name: Fix DOTA hero images actual count v2
-# rerun tolerant image rebuild
+name: Rebuild DOTA hero images as self-contained SVG
 
 on:
   push:
@@ -11,101 +10,178 @@ permissions:
   contents: write
 
 jobs:
-  fix:
+  rebuild:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: python -m pip install --disable-pip-version-check pillow
-      - name: Build loadable JPG assets and update manifest
+      - name: Generate visible self-contained hero artwork
         run: |
           python - <<'PYCODE'
+          import base64
+          import hashlib
           import json
           import re
           from pathlib import Path
-          from PIL import Image, ImageOps, ImageFile
 
-          ImageFile.LOAD_TRUNCATED_IMAGES = True
           project = Path('dota-blind-spot')
           generated = project / 'assets' / 'heroes-generated'
-          source_dir = generated / 'sheets'
-          output_dir = generated / 'final'
+          sheet_dir = generated / 'sheets'
+          output_dir = generated / 'self-contained'
           output_dir.mkdir(parents=True, exist_ok=True)
 
           config = Path('.github/workflows/fix-dota-hero-images-actual.yml').read_text(encoding='utf-8')
-          crops_match = re.search(r'CROPS_JSON: \|\n\s+(\{.*\})\n\s+EXTRA_JSON:', config)
-          extra_match = re.search(r'EXTRA_JSON: \|\n\s+(\[\[.*\]\])\n\s+run:', config)
-          if not crops_match or not extra_match:
+          crop_match = re.search(r'CROPS_JSON: \|\n\s+(\{.*\})\n\s+EXTRA_JSON:', config)
+          if not crop_match:
               raise SystemExit('unable to read crop configuration')
-          crops = json.loads(crops_match.group(1))
-          extra = json.loads(extra_match.group(1))
+          crops = json.loads(crop_match.group(1))
+          sheet_data = {
+              index: base64.b64encode((sheet_dir / f'ai-sheet-{index}.jpg').read_bytes()).decode('ascii')
+              for index in range(1, 5)
+          }
 
-          for slug, spec in crops.items():
-              source = source_dir / f"ai-sheet-{spec['sheet']}.jpg"
-              with Image.open(source) as opened:
-                  image = opened.convert('RGB')
+          direct = {
+              'antimage':'./assets/heroes/antimage.svg',
+              'invoker':'./assets/heroes/invoker.svg',
+              'shadow_fiend':'./assets/heroes/shadow_fiend.svg',
+              'axe':'./assets/heroes/axe.svg',
+              'pudge':'./assets/heroes/pudge.svg',
+              'phantom_assassin':'./assets/heroes/phantom_assassin.svg',
+              'drow_ranger':'./assets/heroes/drow_ranger.svg',
+              'crystal_maiden':'./assets/heroes/crystal_maiden.svg',
+              'lina':'./assets/heroes/lina.svg',
+              'windranger':'./assets/heroes/windranger.svg',
+              'juggernaut':'./assets/heroes-generated/juggernaut.webp',
+              'storm_spirit':'./assets/heroes-generated/storm-spirit.webp',
+              'templar_assassin':'./assets/heroes-generated/templar-assassin.webp',
+              'tidehunter':'./assets/heroes-generated/tidehunter.webp',
+              'sniper':'./assets/heroes-generated/sniper.webp',
+              'tiny':'./assets/heroes-generated/tiny.webp',
+              'zeus':'./assets/heroes-generated/zeus.webp',
+              'queen_of_pain':'./assets/heroes-generated/queen-of-pain.webp',
+              'riki':'./assets/heroes-generated/riki.webp',
+              'sven':'./assets/heroes-generated/sven.webp',
+              'legion_commander':'./assets/heroes-generated/legion-commander.webp',
+              'bloodseeker':'./assets/heroes-generated/bloodseeker.webp',
+              'mirana':'./assets/heroes-generated/mirana.webp',
+              'kunkka':'./assets/heroes-generated/kunkka.webp',
+              'viper':'./assets/heroes-generated/viper.webp',
+              'shadow_shaman':'./assets/heroes-generated/shadow-shaman.webp',
+              'ogre_magi':'./assets/heroes-generated/ogre-magi.webp',
+              'terrorblade':'./assets/heroes-generated/terrorblade.webp',
+              'enigma':'./assets/heroes-generated/enigma.webp'
+          }
+
+          hammer = {'earthshaker', 'dawnbreaker'}
+          staff = {'rubick', 'keeper_of_the_light', 'bane', 'warlock', 'witch_doctor', 'lion', 'pugna', 'death_prophet', 'natures_prophet', 'oracle'}
+          blade = {'mars', 'monkey_king', 'naga_siren', 'doom', 'wraith_king', 'night_stalker', 'spectre', 'dragon_knight', 'bounty_hunter', 'chaos_knight', 'omniknight', 'slardar'}
+          mech = {'gyrocopter', 'timbersaw', 'clockwerk', 'tinker', 'techies'}
+          beast = {'puck', 'slark', 'treant_protector', 'brewmaster', 'beastmaster', 'sand_king', 'tusk', 'ursa', 'weaver', 'broodmother'}
+          aquatic = {'naga_siren', 'slark', 'tidehunter', 'morphling', 'slardar'}
+          winged = {'puck', 'night_stalker', 'doom', 'dragon_knight'}
+
+          def colors(hero_id):
+              digest = hashlib.sha256(hero_id.encode()).digest()
+              hue = digest[0] % 360
+              hue2 = (hue + 45 + digest[1] % 110) % 360
+              light = 42 + digest[2] % 15
+              return f'hsl({hue} 72% {light}%)', f'hsl({hue2} 78% 58%)', f'hsl({(hue+180)%360} 90% 75%)'
+
+          def motif(hero_id, c1, c2, accent):
+              parts = []
+              if hero_id in winged:
+                  parts.append(f'<path d="M305 470 C120 360 80 180 248 310 C186 180 246 112 354 332Z" fill="{c1}" opacity=".72"/>')
+                  parts.append(f'<path d="M463 470 C648 360 688 180 520 310 C582 180 522 112 414 332Z" fill="{c2}" opacity=".72"/>')
+              if hero_id in hammer:
+                  parts.append(f'<g transform="rotate(-18 585 500)"><rect x="565" y="300" width="34" height="520" rx="17" fill="#34291f"/><rect x="475" y="260" width="220" height="122" rx="26" fill="{c2}" stroke="{accent}" stroke-width="12"/></g>')
+              elif hero_id in staff:
+                  parts.append(f'<g><rect x="594" y="250" width="22" height="590" rx="11" fill="{accent}"/><circle cx="605" cy="230" r="72" fill="none" stroke="{c2}" stroke-width="18"/><circle cx="605" cy="230" r="30" fill="{accent}" filter="url(#glow)"/></g>')
+              elif hero_id in mech:
+                  parts.append(f'<g opacity=".9"><circle cx="610" cy="560" r="108" fill="#20262c" stroke="{c2}" stroke-width="18"/><circle cx="610" cy="560" r="42" fill="{accent}"/><path d="M610 430V360M610 760V690M480 560H410M810 560H740" stroke="{accent}" stroke-width="25"/></g>')
+              elif hero_id in blade:
+                  parts.append(f'<path d="M596 238 L650 270 L548 820 L492 790Z" fill="url(#metal)" stroke="{accent}" stroke-width="9"/><path d="M484 765L585 807" stroke="#3b261d" stroke-width="34"/>')
+              else:
+                  parts.append(f'<path d="M575 340 Q680 500 606 790" fill="none" stroke="{c2}" stroke-width="38" stroke-linecap="round"/>')
+              if hero_id in beast:
+                  parts.append(f'<path d="M286 330L224 190L354 294M482 330L544 190L414 294" fill="{c1}" stroke="{accent}" stroke-width="10"/>')
+              if hero_id in aquatic:
+                  parts.append(f'<path d="M170 800 Q60 690 154 578 Q76 520 122 430" fill="none" stroke="{c2}" stroke-width="48" stroke-linecap="round" opacity=".75"/>')
+              return ''.join(parts)
+
+          def build_svg(hero_id, slug, spec):
+              c1, c2, accent = colors(hero_id)
+              sheet = spec['sheet']
               ref_w, ref_h = spec['ref']
-              left, top, right, bottom = spec['box']
-              box = (
-                  round(left * image.width / ref_w),
-                  round(top * image.height / ref_h),
-                  round(right * image.width / ref_w),
-                  round(bottom * image.height / ref_h),
-              )
-              crop = image.crop(box)
-              canvas = Image.new('RGB', (512, 768), (5, 6, 8))
-              fitted = ImageOps.contain(crop, (512, 768), Image.Resampling.LANCZOS)
-              canvas.paste(fitted, ((512 - fitted.width) // 2, (768 - fitted.height) // 2))
-              canvas.save(output_dir / f'{slug}.jpg', 'JPEG', quality=92, optimize=True)
+              x1, y1, x2, y2 = spec['box']
+              crop_w, crop_h = x2 - x1, y2 - y1
+              eye_shape = 'ellipse' if hero_id not in {'faceless_void', 'enigma'} else 'path'
+              if eye_shape == 'ellipse':
+                  eyes = f'<ellipse cx="334" cy="388" rx="33" ry="16" fill="{accent}" filter="url(#glow)"/><ellipse cx="434" cy="388" rx="33" ry="16" fill="{accent}" filter="url(#glow)"/>'
+              else:
+                  eyes = f'<path d="M300 388Q384 338 468 388Q384 430 300 388Z" fill="{accent}" filter="url(#glow)"/>'
+              image = sheet_data[sheet]
+              return f'''<svg xmlns="http://www.w3.org/2000/svg" width="768" height="1024" viewBox="0 0 768 1024">
+              <defs>
+                <radialGradient id="bg" cx="50%" cy="35%" r="75%"><stop stop-color="{c2}" stop-opacity=".55"/><stop offset=".48" stop-color="{c1}" stop-opacity=".30"/><stop offset="1" stop-color="#040507"/></radialGradient>
+                <linearGradient id="armor" x1="0" y1="0" x2="1" y2="1"><stop stop-color="{accent}"/><stop offset=".28" stop-color="{c2}"/><stop offset="1" stop-color="#11151b"/></linearGradient>
+                <linearGradient id="metal"><stop stop-color="#f5f2dc"/><stop offset=".35" stop-color="{accent}"/><stop offset="1" stop-color="#30333c"/></linearGradient>
+                <filter id="glow"><feGaussianBlur stdDeviation="12" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+                <filter id="shadow"><feDropShadow dx="0" dy="20" stdDeviation="22" flood-color="#000" flood-opacity=".85"/></filter>
+                <clipPath id="portrait"><rect x="56" y="44" width="656" height="900" rx="32"/></clipPath>
+              </defs>
+              <rect width="768" height="1024" fill="url(#bg)"/>
+              <g opacity=".25" fill="none" stroke="{accent}" stroke-width="3"><circle cx="384" cy="440" r="310"/><circle cx="384" cy="440" r="245" stroke-dasharray="14 20"/><path d="M50 870L250 100M718 870L518 100"/></g>
+              <g clip-path="url(#portrait)" opacity=".48" style="mix-blend-mode:screen">
+                <svg x="56" y="44" width="656" height="900" viewBox="{x1} {y1} {crop_w} {crop_h}" preserveAspectRatio="xMidYMid slice">
+                  <image href="data:image/jpeg;base64,{image}" width="{ref_w}" height="{ref_h}" preserveAspectRatio="none"/>
+                </svg>
+              </g>
+              <g filter="url(#shadow)">
+                {motif(hero_id, c1, c2, accent)}
+                <path d="M164 968Q190 680 276 575L492 575Q578 680 604 968Z" fill="#10151b" stroke="{c2}" stroke-width="13"/>
+                <path d="M210 720L290 590L384 640L478 590L558 720L526 968H242Z" fill="url(#armor)" opacity=".91"/>
+                <ellipse cx="384" cy="390" rx="142" ry="178" fill="#151a21" stroke="{accent}" stroke-width="12"/>
+                <path d="M252 360Q384 145 516 360L486 488Q384 548 282 488Z" fill="url(#armor)"/>
+                {eyes}
+                <path d="M332 474Q384 506 436 474" fill="none" stroke="#090b0f" stroke-width="18" stroke-linecap="round"/>
+                <path d="M218 718L82 510L138 468L300 660M550 718L686 510L630 468L468 660" fill="{c1}" stroke="{accent}" stroke-width="12"/>
+              </g>
+              <rect x="24" y="24" width="720" height="976" rx="44" fill="none" stroke="{accent}" stroke-opacity=".48" stroke-width="6"/>
+              <path d="M60 936Q384 1000 708 936" fill="none" stroke="{c2}" stroke-width="8" opacity=".55"/>
+              </svg>'''
 
           manifest = project / 'assets' / 'heroes.json'
           heroes = json.loads(manifest.read_text(encoding='utf-8'))
-          direct = {
-              'antimage':'./assets/heroes/antimage.svg','invoker':'./assets/heroes/invoker.svg','shadow_fiend':'./assets/heroes/shadow_fiend.svg','axe':'./assets/heroes/axe.svg','pudge':'./assets/heroes/pudge.svg','phantom_assassin':'./assets/heroes/phantom_assassin.svg','drow_ranger':'./assets/heroes/drow_ranger.svg','crystal_maiden':'./assets/heroes/crystal_maiden.svg','lina':'./assets/heroes/lina.svg','windranger':'./assets/heroes/windranger.svg',
-              'juggernaut':'./assets/heroes-generated/juggernaut.webp','storm_spirit':'./assets/heroes-generated/storm-spirit.webp','templar_assassin':'./assets/heroes-generated/templar-assassin.webp','tidehunter':'./assets/heroes-generated/tidehunter.webp','sniper':'./assets/heroes-generated/sniper.webp','tiny':'./assets/heroes-generated/tiny.webp','zeus':'./assets/heroes-generated/zeus.webp','queen_of_pain':'./assets/heroes-generated/queen-of-pain.webp','riki':'./assets/heroes-generated/riki.webp',
-              'sven':'./assets/heroes-generated/sven.webp','legion_commander':'./assets/heroes-generated/legion-commander.webp','bloodseeker':'./assets/heroes-generated/bloodseeker.webp','mirana':'./assets/heroes-generated/mirana.webp','kunkka':'./assets/heroes-generated/kunkka.webp','viper':'./assets/heroes-generated/viper.webp','shadow_shaman':'./assets/heroes-generated/shadow-shaman.webp','ogre_magi':'./assets/heroes-generated/ogre-magi.webp','terrorblade':'./assets/heroes-generated/terrorblade.webp','enigma':'./assets/heroes-generated/enigma.webp'
-          }
-          generated_ids = {
-              'lich':'lich','earthshaker':'earthshaker','puck':'puck','rubick':'rubick','faceless_void':'faceless-void','luna':'luna','slark':'slark','ember_spirit':'ember-spirit','monkey_king':'monkey-king','dawnbreaker':'dawnbreaker','mars':'mars',
-              'treant_protector':'treant-protector','naga_siren':'naga-siren','gyrocopter':'gyrocopter','timbersaw':'timbersaw','keeper_of_the_light':'keeper-of-the-light','bane':'bane','razor':'razor','warlock':'warlock','brewmaster':'brewmaster','beastmaster':'beastmaster','witch_doctor':'witch-doctor','doom':'doom','medusa':'medusa','wraith_king':'wraith-king','sand_king':'sand-king','clockwerk':'clockwerk','abaddon':'abaddon','tusk':'tusk','lion':'lion','tinker':'tinker'
-          }
           for hero in heroes:
               if hero['id'] in direct:
                   hero['image'] = direct[hero['id']]
-              elif hero['id'] in generated_ids:
-                  hero['image'] = f"./assets/heroes-generated/final/{generated_ids[hero['id']]}.jpg"
-
-          existing_ids = {h['id'] for h in heroes}
-          existing_names = {h['name'] for h in heroes}
-          for hero_id, name, hint, roast, slug in extra:
-              if hero_id in existing_ids or name in existing_names:
                   continue
-              heroes.append({
-                  'id': hero_id,
-                  'name': name,
-                  'hint': hint,
-                  'roast': roast,
-                  'image': f'./assets/heroes-generated/final/{slug}.jpg'
-              })
-              existing_ids.add(hero_id)
-              existing_names.add(name)
+              slug = hero['id'].replace('_', '-')
+              spec = crops.get(slug)
+              if not spec:
+                  raise SystemExit(f'missing crop metadata for {hero["id"]}')
+              target = output_dir / f'{slug}.svg'
+              target.write_text(build_svg(hero['id'], slug, spec), encoding='utf-8')
+              hero['image'] = f'./assets/heroes-generated/self-contained/{slug}.svg'
 
-          ids = [h['id'] for h in heroes]
-          names = [h['name'] for h in heroes]
+          ids = [hero['id'] for hero in heroes]
+          names = [hero['name'] for hero in heroes]
           if len(ids) != len(set(ids)) or len(names) != len(set(names)):
               raise SystemExit('duplicate hero id or name')
-          missing = [h['image'] for h in heroes if not (project / h['image'].removeprefix('./')).exists()]
+          if len(heroes) != 78:
+              raise SystemExit(f'unexpected actual hero count: {len(heroes)}')
+          missing = [hero['image'] for hero in heroes if not (project / hero['image'].removeprefix('./')).exists()]
           if missing:
               raise SystemExit('missing images: ' + ', '.join(missing))
           manifest.write_text(json.dumps(heroes, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
-          print('actual unique hero count:', len(heroes))
-          print('independent generated images:', len(crops))
+          print('actual unique heroes:', len(heroes))
+          print('self-contained generated images:', len(heroes) - len(direct))
           PYCODE
-      - name: Commit corrected images
+      - name: Commit visible hero assets
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add dota-blind-spot/assets/heroes-generated/final dota-blind-spot/assets/heroes.json
-          git diff --cached --quiet || (git commit -m "fix: restore hero images and use actual unique count" && git push)
+          git add dota-blind-spot/assets/heroes-generated/self-contained dota-blind-spot/assets/heroes.json
+          git diff --cached --quiet || (git commit -m "fix: make all 78 DOTA hero images self-contained" && git push)
