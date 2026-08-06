@@ -1,0 +1,90 @@
+          </div>
+        </div>
+        <div class="stage" id="stage">
+          <div class="backdrop" id="backdrop"></div>
+          <div class="portrait-frame"><div class="portrait" id="portrait"></div></div>
+          <div class="shade"></div>
+          <div class="scanlines"></div>
+          <div class="fog"></div>
+          <div class="scope" id="scope"></div>
+          <div class="stage-status"><b id="visible">02%</b><span>当前可见范围<br><span id="positionTip">侦察位置已锁定</span></span></div>
+          <div class="float-score" id="floatScore">−150</div>
+        </div>
+        <div class="foot">
+          <span id="footTip">猜错一次，扩大视野并切换到另一处侦察点</span>
+          <div class="dots" id="dots" aria-label="错误次数"></div>
+        </div>
+      </article>
+
+      <aside class="card">
+        <div class="head">
+          <h2>作出判断</h2>
+          <span id="attemptLabel" style="color:#747b7f;font-size:11px">第 1 次猜测</span>
+        </div>
+        <div class="answer">
+          <div class="type">英雄辨识</div>
+          <div class="prompt">迷雾中是哪一位英雄？</div>
+          <div class="options" id="options"></div>
+          <div class="hint" id="hint"><b>先知提示：</b>暂未使用真视。越早答对，分数越高。</div>
+          <div class="actions">
+            <button class="btn" id="hintBtn">使用真视 −120</button>
+            <button class="btn primary" id="skipBtn">放弃并揭晓</button>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <div class="legal">非官方玩法概念 Demo。Dota、Dota 2 及相关商标归 Valve Corporation 所有。</div>
+  </main>
+
+  <div class="toast" id="toast"></div>
+  <div class="modal" id="modal" aria-hidden="true">
+    <div class="result">
+      <div class="result-img" id="resultImg"></div>
+      <div class="result-body" id="resultBody"></div>
+    </div>
+  </div>
+
+  <script>
+    const GAME_SIZE = 5;
+    const ROUND_TIME = 45;
+    const REVEAL = [28, 44, 68, 100, 146, 620];
+    const VISIBLE = ['02%', '05%', '11%', '22%', '40%', '100%'];
+    const FOG_POINTS = [
+      { x: 17, y: 18 }, { x: 50, y: 16 }, { x: 83, y: 18 },
+      { x: 19, y: 48 }, { x: 50, y: 47 }, { x: 81, y: 48 },
+      { x: 17, y: 79 }, { x: 50, y: 81 }, { x: 83, y: 79 },
+      { x: 34, y: 31 }, { x: 66, y: 31 }, { x: 34, y: 67 }, { x: 66, y: 67 }
+    ];
+
+    let pool = [];
+    let rounds = [];
+    let round = 0;
+    let attempt = 0;
+    let currentScore = 1000;
+    let totalScore = 0;
+    let streak = 0;
+    let seconds = ROUND_TIME;
+    let timer = null;
+    let hintUsed = false;
+    let answered = false;
+    let results = [];
+    let currentFogPoint = null;
+
+    const $ = (id) => document.getElementById(id);
+    const root = document.documentElement;
+
+    const shuffle = (list) => {
+      const copy = [...list];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    };
+
+    function dailyNumber() {
+      const start = new Date('2026-08-01T00:00:00+08:00');
+      const now = new Date();
+      return Math.max(1, Math.floor((now - start) / 86400000) + 1);
+    }
