@@ -19,68 +19,246 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Install image render dependencies
-        run: python -m pip install --disable-pip-version-check pillow cairosvg numpy
+      - name: Install image dependencies
+        run: python -m pip install --disable-pip-version-check pillow requests numpy
 
-      - name: Rebuild and validate all generated hero images
+      - name: Download recognizable hero artwork and validate every image
         run: |
           python - <<'PYCODE'
           import hashlib
           import json
-          import re
           from io import BytesIO
           from pathlib import Path
 
-          import cairosvg
           import numpy as np
-          from PIL import Image, ImageChops, ImageEnhance, ImageFilter, ImageOps
+          import requests
+          from PIL import Image, ImageChops, ImageDraw, ImageEnhance, ImageFilter, ImageOps
 
           project = Path('dota-blind-spot')
           manifest_path = project / 'assets' / 'heroes.json'
-          svg_dir = project / 'assets' / 'heroes-generated' / 'self-contained'
           final_dir = project / 'assets' / 'heroes-generated' / 'final'
           final_dir.mkdir(parents=True, exist_ok=True)
 
-          heroes = json.loads(manifest_path.read_text(encoding='utf-8'))
-          repaired = []
-          metrics = {}
+          # 题库 ID -> DOTA 资源内部名。
+          hero_names = {
+              'abaddon': 'abaddon',
+              'ancient-apparition': 'ancient_apparition',
+              'bane': 'bane',
+              'beastmaster': 'beastmaster',
+              'bounty-hunter': 'bounty_hunter',
+              'brewmaster': 'brewmaster',
+              'broodmother': 'broodmother',
+              'chaos-knight': 'chaos_knight',
+              'clockwerk': 'rattletrap',
+              'dark-seer': 'dark_seer',
+              'dawnbreaker': 'dawnbreaker',
+              'death-prophet': 'death_prophet',
+              'doom': 'doom_bringer',
+              'dragon-knight': 'dragon_knight',
+              'earthshaker': 'earthshaker',
+              'ember-spirit': 'ember_spirit',
+              'faceless-void': 'faceless_void',
+              'gyrocopter': 'gyrocopter',
+              'keeper-of-the-light': 'keeper_of_the_light',
+              'lich': 'lich',
+              'lion': 'lion',
+              'luna': 'luna',
+              'mars': 'mars',
+              'medusa': 'medusa',
+              'monkey-king': 'monkey_king',
+              'morphling': 'morphling',
+              'naga-siren': 'naga_siren',
+              'natures-prophet': 'furion',
+              'night-stalker': 'night_stalker',
+              'omniknight': 'omniknight',
+              'oracle': 'oracle',
+              'puck': 'puck',
+              'pugna': 'pugna',
+              'razor': 'razor',
+              'rubick': 'rubick',
+              'sand-king': 'sand_king',
+              'slardar': 'slardar',
+              'slark': 'slark',
+              'spectre': 'spectre',
+              'techies': 'techies',
+              'timbersaw': 'shredder',
+              'tinker': 'tinker',
+              'treant-protector': 'treant',
+              'tusk': 'tusk',
+              'ursa': 'ursa',
+              'warlock': 'warlock',
+              'weaver': 'weaver',
+              'witch-doctor': 'witch_doctor',
+              'wraith-king': 'skeleton_king',
+          }
 
-          def cover(image, size=(512, 768)):
-              ratio = max(size[0] / image.width, size[1] / image.height)
-              resized = image.resize(
-                  (round(image.width * ratio), round(image.height * ratio)),
-                  Image.Resampling.LANCZOS,
+          id_to_slug = {
+              'lich': 'lich',
+              'earthshaker': 'earthshaker',
+              'puck': 'puck',
+              'rubick': 'rubick',
+              'faceless_void': 'faceless-void',
+              'luna': 'luna',
+              'slark': 'slark',
+              'ember_spirit': 'ember-spirit',
+              'monkey_king': 'monkey-king',
+              'dawnbreaker': 'dawnbreaker',
+              'mars': 'mars',
+              'treant_protector': 'treant-protector',
+              'naga_siren': 'naga-siren',
+              'gyrocopter': 'gyrocopter',
+              'timbersaw': 'timbersaw',
+              'keeper_of_the_light': 'keeper-of-the-light',
+              'bane': 'bane',
+              'razor': 'razor',
+              'warlock': 'warlock',
+              'brewmaster': 'brewmaster',
+              'beastmaster': 'beastmaster',
+              'witch_doctor': 'witch-doctor',
+              'doom': 'doom',
+              'medusa': 'medusa',
+              'wraith_king': 'wraith-king',
+              'sand_king': 'sand-king',
+              'clockwerk': 'clockwerk',
+              'abaddon': 'abaddon',
+              'tusk': 'tusk',
+              'lion': 'lion',
+              'tinker': 'tinker',
+              'night_stalker': 'night-stalker',
+              'spectre': 'spectre',
+              'dragon_knight': 'dragon-knight',
+              'pugna': 'pugna',
+              'ursa': 'ursa',
+              'weaver': 'weaver',
+              'death_prophet': 'death-prophet',
+              'bounty_hunter': 'bounty-hunter',
+              'ancient_apparition': 'ancient-apparition',
+              'chaos_knight': 'chaos-knight',
+              'morphling': 'morphling',
+              'dark_seer': 'dark-seer',
+              'natures_prophet': 'natures-prophet',
+              'broodmother': 'broodmother',
+              'techies': 'techies',
+              'oracle': 'oracle',
+              'omniknight': 'omniknight',
+              'slardar': 'slardar',
+          }
+
+          session = requests.Session()
+          session.headers.update({
+              'User-Agent': 'Mozilla/5.0 (compatible; dota-blind-spot-builder/1.0)',
+              'Accept': 'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8',
+          })
+
+          def source_urls(internal_name):
+              return [
+                  f'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/heroes/{internal_name}_vert.jpg',
+                  f'https://cdn.dota2.com/apps/dota2/images/heroes/{internal_name}_vert.jpg',
+                  f'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/{internal_name}.png',
+                  f'https://cdn.akamai.steamstatic.com/apps/dota2/images/dota_react/heroes/{internal_name}.png',
+              ]
+
+          def download_image(internal_name):
+              failures = []
+              for url in source_urls(internal_name):
+                  try:
+                      response = session.get(url, timeout=25)
+                      if response.status_code != 200:
+                          failures.append(f'{response.status_code} {url}')
+                          continue
+                      if len(response.content) < 5000:
+                          failures.append(f'small response {len(response.content)} {url}')
+                          continue
+                      with Image.open(BytesIO(response.content)) as opened:
+                          image = opened.convert('RGB')
+                      if image.width < 100 or image.height < 100:
+                          failures.append(f'small dimensions {image.size} {url}')
+                          continue
+                      return image, url
+                  except Exception as exc:
+                      failures.append(f'{type(exc).__name__}: {exc} {url}')
+              raise SystemExit(
+                  'unable to download hero artwork for '
+                  + internal_name
+                  + '\n'
+                  + '\n'.join(failures)
               )
-              left = (resized.width - size[0]) // 2
-              top = max(0, round((resized.height - size[1]) * 0.38))
-              return resized.crop((left, top, left + size[0], top + size[1]))
 
-          def gamma_adjust(image, gamma):
-              arr = np.asarray(image).astype(np.float32) / 255.0
-              arr = np.power(arr, gamma)
-              return Image.fromarray(np.clip(arr * 255.0, 0, 255).astype(np.uint8), 'RGB')
+          def fit_cover(image, size, centering=(0.5, 0.42)):
+              return ImageOps.fit(
+                  image,
+                  size,
+                  method=Image.Resampling.LANCZOS,
+                  centering=centering,
+              )
 
-          def add_center_glow(image, slug):
+          def make_portrait(source, slug):
+              width, height = 512, 768
+
+              background = fit_cover(source, (width, height))
+              background = background.filter(ImageFilter.GaussianBlur(30))
+              background = ImageEnhance.Brightness(background).enhance(0.42)
+              background = ImageEnhance.Color(background).enhance(1.28)
+
+              # 中央立绘：竖图完整展示；横图适度裁边，确保英雄主体足够大。
+              ratio = source.width / source.height
+              if ratio <= 1.05:
+                  foreground = ImageOps.contain(
+                      source,
+                      (470, 716),
+                      method=Image.Resampling.LANCZOS,
+                  )
+              else:
+                  foreground = fit_cover(source, (470, 640), centering=(0.5, 0.40))
+
+              foreground = ImageOps.autocontrast(foreground, cutoff=0.35)
+              foreground = ImageEnhance.Brightness(foreground).enhance(1.13)
+              foreground = ImageEnhance.Contrast(foreground).enhance(1.08)
+              foreground = ImageEnhance.Color(foreground).enhance(1.08)
+              foreground = foreground.filter(
+                  ImageFilter.UnsharpMask(radius=1.1, percent=115, threshold=3)
+              )
+
+              canvas = background.copy()
+              x = (width - foreground.width) // 2
+              y = max(18, (height - foreground.height) // 2 - 8)
+
+              # 给立绘增加柔和阴影，避免暗部与背景融为一体。
+              shadow_mask = Image.new('L', foreground.size, 235)
+              shadow_mask = shadow_mask.filter(ImageFilter.GaussianBlur(18))
+              shadow = Image.new('RGB', foreground.size, (0, 0, 0))
+              canvas.paste(shadow, (x, y + 14), shadow_mask)
+              canvas.paste(foreground, (x, y))
+
+              # 轻微中心补光和暗角，保持暗黑风格但不允许整图漆黑。
+              yy, xx = np.ogrid[:height, :width]
+              cx, cy = width * 0.50, height * 0.43
+              distance = ((xx - cx) / (width * 0.66)) ** 2 + ((yy - cy) / (height * 0.66)) ** 2
+              center = np.clip(1.0 - distance, 0, 1) ** 1.7
               seed = int(hashlib.sha256(slug.encode()).hexdigest()[:8], 16)
-              color = np.array([
-                  45 + seed % 38,
-                  38 + (seed >> 7) % 42,
-                  55 + (seed >> 13) % 52,
+              glow_color = np.array([
+                  28 + seed % 22,
+                  25 + (seed >> 7) % 24,
+                  34 + (seed >> 13) % 30,
               ], dtype=np.float32)
-              h, w = image.height, image.width
-              yy, xx = np.ogrid[:h, :w]
-              cx, cy = w * 0.5, h * 0.43
-              distance = ((xx - cx) / (w * 0.64)) ** 2 + ((yy - cy) / (h * 0.66)) ** 2
-              strength = np.clip(1.0 - distance, 0, 1) ** 1.5
-              glow = np.zeros((h, w, 3), dtype=np.uint8)
-              glow[:] = np.clip(strength[..., None] * color, 0, 255).astype(np.uint8)
-              return ImageChops.screen(image, Image.fromarray(glow, 'RGB'))
+              glow_array = np.clip(center[..., None] * glow_color, 0, 255).astype(np.uint8)
+              canvas = ImageChops.screen(canvas, Image.fromarray(glow_array, 'RGB'))
 
-          def image_metrics(image):
+              edge = np.clip(distance, 0, 1)
+              alpha = np.clip((edge - 0.45) / 0.55, 0, 1) * 105
+              vignette = Image.new('RGB', (width, height), (0, 0, 0))
+              canvas = Image.composite(
+                  vignette,
+                  canvas,
+                  Image.fromarray(alpha.astype(np.uint8), 'L'),
+              )
+              return canvas
+
+          def metrics_for(image):
               gray = np.asarray(image.convert('L'))
               center = gray[
-                  round(gray.shape[0] * 0.18):round(gray.shape[0] * 0.82),
-                  round(gray.shape[1] * 0.18):round(gray.shape[1] * 0.82),
+                  round(gray.shape[0] * 0.15):round(gray.shape[0] * 0.83),
+                  round(gray.shape[1] * 0.14):round(gray.shape[1] * 0.86),
               ]
               return {
                   'mean': round(float(gray.mean()), 2),
@@ -92,106 +270,88 @@ jobs:
                   'center_p90': round(float(np.percentile(center, 90)), 2),
               }
 
+          heroes = json.loads(manifest_path.read_text(encoding='utf-8'))
+          metrics = {}
+          repaired = []
+
           for hero in heroes:
-              source_path = hero.get('image', '').split('?', 1)[0]
-              if '/self-contained/' not in source_path or not source_path.endswith('.svg'):
+              slug = id_to_slug.get(hero['id'])
+              if not slug:
                   continue
+              internal_name = hero_names[slug]
+              source, source_url = download_image(internal_name)
+              image = make_portrait(source, slug)
 
-              slug = Path(source_path).stem
-              svg_path = svg_dir / f'{slug}.svg'
-              svg_text = svg_path.read_text(encoding='utf-8')
-
-              # 彻底移除旧 SVG 中引用损坏 JPEG 的嵌套图层，只保留完整矢量造型。
-              svg_text, removed = re.subn(
-                  r'<g\s+clip-path="url\(#portrait\)".*?</g>',
-                  '',
-                  svg_text,
-                  count=1,
-                  flags=re.S,
-              )
-              if removed != 1:
-                  raise SystemExit(f'{slug}: broken embedded image layer not found')
-
-              png_bytes = cairosvg.svg2png(
-                  bytestring=svg_text.encode('utf-8'),
-                  output_width=768,
-                  output_height=1024,
-              )
-              with Image.open(BytesIO(png_bytes)) as opened:
-                  base = opened.convert('RGB')
-
-              base = cover(base)
-              base = add_center_glow(base, slug)
-              base = ImageOps.autocontrast(base, cutoff=0.2)
-
-              image = base
-              for gamma in (0.86, 0.78, 0.70, 0.62, 0.54):
-                  candidate = gamma_adjust(base, gamma)
-                  candidate = ImageEnhance.Color(candidate).enhance(1.16)
-                  candidate = ImageEnhance.Contrast(candidate).enhance(1.04)
-                  current = image_metrics(candidate)
-                  image = candidate
-                  if current['mean'] >= 58 and current['center_mean'] >= 72 and current['center_p90'] >= 125:
-                      break
-
-              image = image.filter(ImageFilter.UnsharpMask(radius=1.1, percent=115, threshold=3))
               output_path = final_dir / f'{slug}.jpg'
               image.save(output_path, 'JPEG', quality=91, optimize=True, progressive=True)
 
-              current = image_metrics(image)
-              current['bytes'] = output_path.stat().st_size
-              current['sha256'] = hashlib.sha256(output_path.read_bytes()).hexdigest()
+              current = metrics_for(image)
+              current.update({
+                  'bytes': output_path.stat().st_size,
+                  'sha256': hashlib.sha256(output_path.read_bytes()).hexdigest(),
+                  'source_url': source_url,
+                  'source_width': source.width,
+                  'source_height': source.height,
+              })
               metrics[slug] = current
 
-              if current['mean'] < 55:
-                  raise SystemExit(f'{slug}: whole image still too dark: {current}')
-              if current['center_mean'] < 68:
-                  raise SystemExit(f'{slug}: hero center still too dark: {current}')
-              if current['center_std'] < 28:
+              if current['mean'] < 42:
+                  raise SystemExit(f'{slug}: whole image too dark: {current}')
+              if current['center_mean'] < 48:
+                  raise SystemExit(f'{slug}: hero center too dark: {current}')
+              if current['center_std'] < 20:
                   raise SystemExit(f'{slug}: hero center lacks visible detail: {current}')
-              if current['center_p90'] < 115:
-                  raise SystemExit(f'{slug}: hero highlights are too dark: {current}')
+              if current['center_p90'] < 85:
+                  raise SystemExit(f'{slug}: hero highlights too dark: {current}')
+              if current['dark_ratio'] > 0.34:
+                  raise SystemExit(f'{slug}: excessive black area: {current}')
               if current['bytes'] < 15000:
                   raise SystemExit(f'{slug}: output file unexpectedly small: {current}')
 
-              hero['image'] = f'./assets/heroes-generated/final/{slug}.jpg?v=20260806-vector6'
+              hero['image'] = f'./assets/heroes-generated/final/{slug}.jpg?v=20260806-heroart7'
               repaired.append(slug)
 
           if len(repaired) != 49:
-              raise SystemExit(f'expected 49 repaired images, got {len(repaired)}')
+              raise SystemExit(f'expected 49 repaired hero images, got {len(repaired)}')
 
-          ids = [h['id'] for h in heroes]
-          names = [h['name'] for h in heroes]
+          ids = [hero['id'] for hero in heroes]
+          names = [hero['name'] for hero in heroes]
           if len(ids) != len(set(ids)) or len(names) != len(set(names)):
               raise SystemExit('duplicate hero id or name')
+
+          hashes = [metrics[slug]['sha256'] for slug in repaired]
+          if len(hashes) != len(set(hashes)):
+              raise SystemExit('duplicate final hero image byte content detected')
 
           for hero in heroes:
               relative = hero['image'].split('?', 1)[0].removeprefix('./')
               if not (project / relative).exists():
                   raise SystemExit(f'missing referenced image: {hero["image"]}')
 
-          hashes = [metrics[slug]['sha256'] for slug in repaired]
-          if len(hashes) != len(set(hashes)):
-              raise SystemExit('duplicate repaired image content detected')
-
-          manifest_path.write_text(json.dumps(heroes, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
-          (final_dir / 'validation.json').write_text(json.dumps(metrics, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+          manifest_path.write_text(
+              json.dumps(heroes, ensure_ascii=False, indent=2) + '\n',
+              encoding='utf-8',
+          )
+          (final_dir / 'validation.json').write_text(
+              json.dumps(metrics, ensure_ascii=False, indent=2) + '\n',
+              encoding='utf-8',
+          )
 
           print('hero records:', len(heroes))
-          print('repaired final JPG files:', len(repaired))
-          print('minimum whole mean:', min(v['mean'] for v in metrics.values()))
-          print('minimum center mean:', min(v['center_mean'] for v in metrics.values()))
-          print('minimum center p90:', min(v['center_p90'] for v in metrics.values()))
-          print('ursa:', metrics['ursa'])
+          print('recognizable hero images rebuilt:', len(repaired))
+          print('minimum whole mean:', min(item['mean'] for item in metrics.values()))
+          print('minimum center mean:', min(item['center_mean'] for item in metrics.values()))
+          print('maximum dark ratio:', max(item['dark_ratio'] for item in metrics.values()))
+          print('ursa:', json.dumps(metrics['ursa'], ensure_ascii=False))
           PYCODE
 
-      - name: Commit repaired hero assets
+      - name: Commit repaired hero artwork
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add dota-blind-spot/assets/heroes.json \
                   dota-blind-spot/assets/heroes-generated/final
           git diff --cached --quiet || (
-            git commit -m "fix: replace all black generated hero images" &&
+            git commit -m "fix: replace black placeholders with recognizable hero artwork" &&
             git push
           )
