@@ -4,419 +4,545 @@
     "name": "敌法师",
     "hint": "敏捷型近战英雄，擅长闪烁切入并克制魔法。",
     "roast": "你与正确答案之间，只差一次闪烁。",
-    "image": "./assets/heroes-generated/ai-antimage.svg"
+    "image": "./assets/heroes/antimage.svg"
   },
   {
     "id": "invoker",
     "name": "祈求者",
     "hint": "智力型远程英雄，通过三种元素组合大量法术。",
     "roast": "十个技能很难记，但这张脸应该不难。",
-    "image": "./assets/heroes-generated/ai-invoker.svg"
+    "image": "./assets/heroes/invoker.svg"
   },
   {
     "id": "shadow_fiend",
     "name": "影魔",
     "hint": "敏捷型远程英雄，以收集灵魂和三连影压闻名。",
     "roast": "三道影压都没压中你的记忆。",
-    "image": "./assets/heroes-generated/ai-shadow-fiend.svg"
+    "image": "./assets/heroes/shadow_fiend.svg"
   },
   {
     "id": "axe",
     "name": "斧王",
     "hint": "力量型近战英雄，喜欢冲入人群并强迫敌人攻击自己。",
     "roast": "斧王已经吼了，你的答案还没转起来。",
-    "image": "./assets/heroes-generated/ai-axe.svg"
+    "image": "./assets/heroes/axe.svg"
   },
   {
     "id": "pudge",
     "name": "帕吉",
     "hint": "力量型近战英雄，最经典的技能是一根能拖回敌人的钩子。",
     "roast": "这身材都没认出来，建议少在泉水挂机。",
-    "image": "./assets/heroes-generated/ai-pudge.svg"
+    "image": "./assets/heroes/pudge.svg"
   },
   {
     "id": "phantom_assassin",
     "name": "幻影刺客",
     "hint": "敏捷型近战核心，擅长突进并打出致命暴击。",
     "roast": "模糊确实是她的特长，不是你的借口。",
-    "image": "./assets/heroes-generated/ai-phantom-assassin.svg"
+    "image": "./assets/heroes/phantom_assassin.svg"
   },
   {
     "id": "drow_ranger",
     "name": "卓尔游侠",
     "hint": "敏捷型远程英雄，以冰霜箭矢和精准射击闻名。",
     "roast": "至少你最终发现，她并不是风行者。",
-    "image": "./assets/heroes-generated/ai-drow-ranger.svg"
+    "image": "./assets/heroes/drow_ranger.svg"
   },
   {
     "id": "crystal_maiden",
     "name": "水晶室女",
     "hint": "智力型远程辅助，技能与冰霜有关，并为全队提供魔法恢复。",
     "roast": "她走得很慢，但你的答案来得更慢。",
-    "image": "./assets/heroes-generated/ai-crystal-maiden.svg"
+    "image": "./assets/heroes/crystal_maiden.svg"
   },
   {
     "id": "lina",
     "name": "莉娜",
     "hint": "智力型远程英雄，红发、火焰与高爆发是她的标志。",
     "roast": "这么大的火光，都没照亮正确答案。",
-    "image": "./assets/heroes-generated/ai-lina.svg"
+    "image": "./assets/heroes/lina.svg"
   },
   {
     "id": "windranger",
     "name": "风行者",
     "hint": "敏捷型远程英雄，绿色兜帽、弓箭和风系能力十分醒目。",
     "roast": "风已经指明方向，你还是射偏了。",
-    "image": "./assets/heroes-generated/ai-windranger.svg"
+    "image": "./assets/heroes/windranger.svg"
   },
   {
     "id": "juggernaut",
     "name": "主宰",
     "hint": "敏捷型近战英雄，戴着面具并使用长刀，擅长剑刃风暴与无敌斩。",
     "roast": "面具和长刀都在，你还是没进入剑圣状态。",
-    "image": "./assets/heroes-generated/ai-juggernaut.svg"
+    "image": "./assets/heroes-generated/juggernaut.webp"
   },
   {
     "id": "storm_spirit",
     "name": "风暴之灵",
     "hint": "智力型远程英雄，蓝色身躯与雷电法术十分醒目。",
     "roast": "他滚遍了整张图，还是没滚进你的答案。",
-    "image": "./assets/heroes-generated/ai-storm-spirit.svg"
+    "image": "./assets/heroes-generated/storm-spirit.webp"
   },
   {
     "id": "templar_assassin",
     "name": "圣堂刺客",
     "hint": "敏捷型远程核心，紫色装束、灵能利刃和隐匿能力是她的标志。",
     "roast": "折光挡住了伤害，也挡住了你的记忆。",
-    "image": "./assets/heroes-generated/ai-templar-assassin.svg"
+    "image": "./assets/heroes-generated/templar-assassin.webp"
   },
   {
     "id": "tidehunter",
     "name": "潮汐猎人",
     "hint": "力量型近战英雄，体型巨大、来自深海，手持沉重船锚。",
     "roast": "这么大的海怪都看不见，团战更别指望躲大了。",
-    "image": "./assets/heroes-generated/ai-tidehunter.svg"
+    "image": "./assets/heroes-generated/tidehunter.webp"
   },
   {
     "id": "sniper",
     "name": "狙击手",
     "hint": "敏捷型远程英雄，矮小身材、护目镜和长枪极具辨识度。",
     "roast": "射程这么远，答案却没打到。",
-    "image": "./assets/heroes-generated/ai-sniper.svg"
+    "image": "./assets/heroes-generated/sniper.webp"
   },
   {
     "id": "tiny",
     "name": "小小",
     "hint": "力量型近战英雄，由岩石组成，会随着成长变得越来越巨大。",
     "roast": "名字叫小小，画面可一点都不小。",
-    "image": "./assets/heroes-generated/ai-tiny.svg"
+    "image": "./assets/heroes-generated/tiny.webp"
   },
   {
     "id": "zeus",
     "name": "宙斯",
     "hint": "智力型远程英雄，白发白须并掌控雷霆。",
     "roast": "雷都劈到脸上了，你还没认出众神之王。",
-    "image": "./assets/heroes-generated/ai-zeus.svg"
+    "image": "./assets/heroes-generated/zeus.webp"
   },
   {
     "id": "queen_of_pain",
     "name": "痛苦女王",
     "hint": "智力型远程英雄，恶魔双翼、红色装束和尖啸能力非常醒目。",
     "roast": "她的尖叫很痛苦，你的答案更痛苦。",
-    "image": "./assets/heroes-generated/ai-queen-of-pain.svg"
+    "image": "./assets/heroes-generated/queen-of-pain.webp"
   },
   {
     "id": "riki",
     "name": "力丸",
     "hint": "敏捷型近战英雄，擅长隐身、烟幕和从背后发动攻击。",
     "roast": "隐形刺客隐身成功，连你的记忆也一起消失了。",
-    "image": "./assets/heroes-generated/ai-riki.svg"
+    "image": "./assets/heroes-generated/riki.webp"
   },
   {
     "id": "lich",
     "name": "巫妖",
     "hint": "智力型远程辅助，冰霜亡灵造型，擅长以连环霜冻在敌人之间弹射。",
     "roast": "寒气已经扑到脸上，你的答案却还没解冻。",
-    "image": "./assets/heroes-generated/ai-lich.svg"
+    "image": "./assets/heroes-generated/final/lich.jpg"
   },
   {
     "id": "sven",
     "name": "斯温",
     "hint": "力量型近战英雄，身穿蓝色重甲并挥舞巨剑。",
     "roast": "巨剑已经占了半张图，答案还在迷路。",
-    "image": "./assets/heroes-generated/ai-sven.svg"
+    "image": "./assets/heroes-generated/sven.webp"
   },
   {
     "id": "legion_commander",
     "name": "军团指挥官",
     "hint": "力量型近战英雄，红金战甲、长枪与决斗是她的标志。",
     "roast": "决斗已经开始，你却把对手名字忘了。",
-    "image": "./assets/heroes-generated/ai-legion-commander.svg"
+    "image": "./assets/heroes-generated/legion-commander.webp"
   },
   {
     "id": "bloodseeker",
     "name": "血魔",
     "hint": "敏捷型近战英雄，嗜血、红色面具与追猎残血敌人是其特征。",
     "roast": "血腥味都飘出来了，你还是追错了人。",
-    "image": "./assets/heroes-generated/ai-bloodseeker.svg"
+    "image": "./assets/heroes-generated/bloodseeker.webp"
   },
   {
     "id": "mirana",
     "name": "米拉娜",
     "hint": "敏捷型远程英雄，骑乘白虎并使用月光长弓。",
     "roast": "白虎已经扑到面前，这支箭还是射空了。",
-    "image": "./assets/heroes-generated/ai-mirana.svg"
+    "image": "./assets/heroes-generated/mirana.webp"
   },
   {
     "id": "kunkka",
     "name": "昆卡",
     "hint": "力量型近战英雄，海军上将造型并操控潮汐与幽灵船。",
     "roast": "船长已经扬帆，你还没找到正确航线。",
-    "image": "./assets/heroes-generated/ai-kunkka.svg"
+    "image": "./assets/heroes-generated/kunkka.webp"
   },
   {
     "id": "viper",
     "name": "冥界亚龙",
     "hint": "敏捷型远程英雄，绿色毒液、龙形身体与持续毒伤是其特点。",
     "roast": "毒都快滴到屏幕上了，你还以为它无毒。",
-    "image": "./assets/heroes-generated/ai-viper.svg"
+    "image": "./assets/heroes-generated/viper.webp"
   },
   {
     "id": "shadow_shaman",
     "name": "暗影萨满",
     "hint": "智力型远程辅助，擅长妖术、枷锁和召唤蛇棒。",
     "roast": "你可能被变成小动物了，所以没能回答。",
-    "image": "./assets/heroes-generated/ai-shadow-shaman.svg"
+    "image": "./assets/heroes-generated/shadow-shaman.webp"
   },
   {
     "id": "ogre_magi",
     "name": "食人魔魔法师",
     "hint": "智力型近战辅助，蓝色双头食人魔，施法时可能触发多重施法。",
     "roast": "两个脑袋都认得你，你却没认出它们。",
-    "image": "./assets/heroes-generated/ai-ogre-magi.svg"
+    "image": "./assets/heroes-generated/ogre-magi.webp"
   },
   {
     "id": "terrorblade",
     "name": "恐怖利刃",
     "hint": "敏捷型近战核心，恶魔双翼、青色能量与幻象是其标志。",
     "roast": "倒影里都是答案，你偏偏看向了别处。",
-    "image": "./assets/heroes-generated/ai-terrorblade.svg"
+    "image": "./assets/heroes-generated/terrorblade.webp"
   },
   {
     "id": "enigma",
     "name": "谜团",
     "hint": "智力型远程英雄，身体如同深邃宇宙，并能制造强大的黑洞。",
     "roast": "答案被黑洞吸走了，看来不是你的问题。",
-    "image": "./assets/heroes-generated/ai-enigma.svg"
+    "image": "./assets/heroes-generated/enigma.webp"
   },
   {
     "id": "earthshaker",
     "name": "撼地者",
     "hint": "力量型近战英雄，牛头战士造型，擅长制造沟壑并以回音击震碎战场。",
     "roast": "大地都震了三次，你的答案还是纹丝不动。",
-    "image": "./assets/heroes-generated/ai-earthshaker.svg"
+    "image": "./assets/heroes-generated/final/earthshaker.jpg"
   },
   {
     "id": "puck",
     "name": "帕克",
     "hint": "智力型远程英雄，外形如梦幻仙龙，能够相位转移并用梦境缠绕敌人。",
     "roast": "它已经躲进异次元，你的正确答案也跟着消失了。",
-    "image": "./assets/heroes-generated/ai-puck.svg"
+    "image": "./assets/heroes-generated/final/puck.jpg"
   },
   {
     "id": "rubick",
     "name": "拉比克",
     "hint": "智力型远程辅助，绿色斗篷与法杖醒目，最著名的能力是窃取敌方技能。",
     "roast": "技能都偷到了，唯独没偷到你的正确答案。",
-    "image": "./assets/heroes-generated/ai-rubick.svg"
+    "image": "./assets/heroes-generated/final/rubick.jpg"
   },
   {
     "id": "faceless_void",
     "name": "虚空假面",
     "hint": "敏捷型近战核心，紫色无面身体，能够操控时间并制造时间结界。",
     "roast": "时间都暂停了，你还是没来得及认出来。",
-    "image": "./assets/heroes-generated/ai-faceless-void.svg"
+    "image": "./assets/heroes-generated/final/faceless-void.jpg"
   },
   {
     "id": "luna",
     "name": "露娜",
     "hint": "敏捷型远程核心，银蓝战甲并骑乘黑豹，以月刃和月蚀闻名。",
     "roast": "月光这么亮，仍然没照见你的答案。",
-    "image": "./assets/heroes-generated/ai-luna.svg"
+    "image": "./assets/heroes-generated/final/luna.jpg"
   },
   {
     "id": "slark",
     "name": "斯拉克",
     "hint": "敏捷型近战英雄，深海鱼人外形，擅长突袭、偷取属性并藏入暗影。",
     "roast": "小鱼人已经溜走，顺便带走了你的判断力。",
-    "image": "./assets/heroes-generated/ai-slark.svg"
+    "image": "./assets/heroes-generated/final/slark.jpg"
   },
   {
     "id": "ember_spirit",
     "name": "灰烬之灵",
     "hint": "敏捷型近战英雄，火焰武者造型，使用双刀与残焰高速穿梭战场。",
     "roast": "残焰飞了满屏，你却没跟上正确答案。",
-    "image": "./assets/heroes-generated/ai-ember-spirit.svg"
+    "image": "./assets/heroes-generated/final/ember-spirit.jpg"
   },
   {
     "id": "monkey_king",
     "name": "齐天大圣",
     "hint": "敏捷型近战英雄，猴王造型并手持长棍，能够腾跃树梢和召唤猴兵。",
     "roast": "金箍棒已经伸到脸上，你还在猜别的英雄。",
-    "image": "./assets/heroes-generated/ai-monkey-king.svg"
+    "image": "./assets/heroes-generated/final/monkey-king.jpg"
   },
   {
     "id": "dawnbreaker",
     "name": "破晓辰星",
     "hint": "力量型近战英雄，金色天界战士，手持巨大战锤并能跨地图支援队友。",
     "roast": "天都亮了，你的答案还停留在黑夜。",
-    "image": "./assets/heroes-generated/ai-dawnbreaker.svg"
+    "image": "./assets/heroes-generated/final/dawnbreaker.jpg"
   },
   {
     "id": "mars",
     "name": "玛尔斯",
     "hint": "力量型近战英雄，红金盔甲，手持长矛和巨盾并能创造竞技场。",
     "roast": "竞技场都搭好了，你却认错了主角。",
-    "image": "./assets/heroes-generated/ai-mars.svg"
+    "image": "./assets/heroes-generated/final/mars.jpg"
   },
   {
     "id": "treant_protector",
     "name": "树精卫士",
     "hint": "力量型近战辅助，巨大的树人英雄，能隐于树林并用藤蔓保护队友。",
     "roast": "整片树林都在提醒你，你却只看见了背景。",
-    "image": "./assets/heroes-generated/treant-protector.svg"
+    "image": "./assets/heroes-generated/final/treant-protector.jpg"
   },
   {
     "id": "naga_siren",
     "name": "娜迦海妖",
     "hint": "敏捷型近战核心，海族女战士，能够制造幻象并用歌声令战场沉睡。",
     "roast": "海妖都唱完一首了，你的答案还没醒。",
-    "image": "./assets/heroes-generated/naga-siren.svg"
+    "image": "./assets/heroes-generated/final/naga-siren.jpg"
   },
   {
     "id": "gyrocopter",
     "name": "矮人直升机",
     "hint": "敏捷型远程英雄，驾驶武装飞行器，以火箭、机炮和空袭覆盖战场。",
     "roast": "螺旋桨都快刮到脸了，你还在地面找英雄。",
-    "image": "./assets/heroes-generated/gyrocopter.svg"
+    "image": "./assets/heroes-generated/final/gyrocopter.jpg"
   },
   {
     "id": "timbersaw",
     "name": "伐木机",
     "hint": "力量型近战英雄，乘坐圆锯机械，擅长在树木之间高速穿梭。",
     "roast": "锯子已经开工了，你的记忆却还没开机。",
-    "image": "./assets/heroes-generated/timbersaw.svg"
+    "image": "./assets/heroes-generated/final/timbersaw.jpg"
   },
   {
     "id": "keeper_of_the_light",
     "name": "光之守卫",
     "hint": "智力型远程辅助，白须老法师骑乘战马，能够蓄力释放强烈光波。",
     "roast": "光都照到屏幕外了，你还是没看清答案。",
-    "image": "./assets/heroes-generated/keeper-of-the-light.svg"
+    "image": "./assets/heroes-generated/final/keeper-of-the-light.jpg"
   },
   {
     "id": "bane",
     "name": "祸乱之源",
     "hint": "智力型远程英雄，紫色梦魇生物，擅长削弱敌人并将目标拖入噩梦。",
     "roast": "这不是做梦，你是真的又猜错了。",
-    "image": "./assets/heroes-generated/bane.svg"
+    "image": "./assets/heroes-generated/final/bane.jpg"
   },
   {
     "id": "razor",
     "name": "剃刀",
     "hint": "敏捷型远程英雄，蓝色闪电幽魂，能够连接敌人并持续抽取攻击力。",
     "roast": "电线都接上了，你的思路还是断路。",
-    "image": "./assets/heroes-generated/razor.svg"
+    "image": "./assets/heroes-generated/final/razor.jpg"
   },
   {
     "id": "warlock",
     "name": "术士",
     "hint": "智力型远程辅助，红绿长袍的黑暗法师，能召唤地狱火并链接敌人。",
     "roast": "地狱火都落地了，你的答案还在读条。",
-    "image": "./assets/heroes-generated/warlock.svg"
+    "image": "./assets/heroes-generated/final/warlock.jpg"
   },
   {
     "id": "brewmaster",
     "name": "酒仙",
     "hint": "力量型近战英雄，熊猫酒客造型，能够分裂成多个元素战士作战。",
     "roast": "酒可以喝多，英雄可不能认错。",
-    "image": "./assets/heroes-generated/brewmaster.svg"
+    "image": "./assets/heroes-generated/final/brewmaster.jpg"
   },
   {
     "id": "beastmaster",
     "name": "兽王",
     "hint": "力量型近战英雄，野性战士造型，能够召唤野兽侦察并以怒吼控制敌人。",
     "roast": "野兽们全认出主人了，只有你没有。",
-    "image": "./assets/heroes-generated/beastmaster.svg"
+    "image": "./assets/heroes-generated/final/beastmaster.jpg"
   },
   {
     "id": "witch_doctor",
     "name": "巫医",
     "hint": "智力型远程辅助，戴着面具的部族巫师，使用弹射麻痹和死亡守卫。",
     "roast": "药到病除，但治不好你的认人困难。",
-    "image": "./assets/heroes-generated/witch-doctor.svg"
+    "image": "./assets/heroes-generated/final/witch-doctor.jpg"
   },
   {
     "id": "doom",
     "name": "末日使者",
     "hint": "力量型近战英雄，燃烧的恶魔领主，能够吞噬野怪并让目标无法施法。",
     "roast": "末日已经降临，正确答案却没有。",
-    "image": "./assets/heroes-generated/doom.svg"
+    "image": "./assets/heroes-generated/final/doom.jpg"
   },
   {
     "id": "medusa",
     "name": "美杜莎",
     "hint": "敏捷型远程核心，蛇发女妖造型，拥有分裂箭、魔法盾和石化凝视。",
     "roast": "你没被石化，只是答案卡住了。",
-    "image": "./assets/heroes-generated/medusa.svg"
+    "image": "./assets/heroes-generated/final/medusa.jpg"
   },
   {
     "id": "wraith_king",
     "name": "冥魂大帝",
     "hint": "力量型近战核心，绿色亡灵君王，倒下后通常还能再次复活。",
     "roast": "他都复活了，你的记忆还没复活。",
-    "image": "./assets/heroes-generated/wraith-king.svg"
+    "image": "./assets/heroes-generated/final/wraith-king.jpg"
   },
   {
     "id": "sand_king",
     "name": "沙王",
     "hint": "力量型近战英雄，巨型沙漠蝎子，能钻入沙地并制造大范围地震。",
     "roast": "沙尘这么大，也不能把答案全埋了。",
-    "image": "./assets/heroes-generated/sand-king.svg"
+    "image": "./assets/heroes-generated/final/sand-king.jpg"
   },
   {
     "id": "clockwerk",
     "name": "发条技师",
     "hint": "力量型近战英雄，身穿机械装甲，以齿轮、照明弹和钩爪切入战场。",
     "roast": "齿轮已经转了半天，你的思路还没启动。",
-    "image": "./assets/heroes-generated/clockwerk.svg"
+    "image": "./assets/heroes-generated/final/clockwerk.jpg"
   },
   {
     "id": "abaddon",
     "name": "亚巴顿",
     "hint": "力量型近战英雄，骑乘幽灵战马，能够施加护盾并在危急时吸收伤害。",
     "roast": "护盾保住了他，却保不住你的答案。",
-    "image": "./assets/heroes-generated/abaddon.svg"
+    "image": "./assets/heroes-generated/final/abaddon.jpg"
   },
   {
     "id": "tusk",
     "name": "巨牙海民",
     "hint": "力量型近战英雄，来自冰原的海象战士，擅长雪球突进与强力上勾拳。",
     "roast": "雪球都滚到终点了，你还在起点猜。",
-    "image": "./assets/heroes-generated/tusk.svg"
+    "image": "./assets/heroes-generated/final/tusk.jpg"
   },
   {
     "id": "lion",
     "name": "莱恩",
     "hint": "智力型远程辅助，恶魔巫师造型，能够穿刺、变羊并释放高爆发死亡一指。",
     "roast": "死亡一指已经点名，你却叫错了名字。",
-    "image": "./assets/heroes-generated/lion.svg"
+    "image": "./assets/heroes-generated/final/lion.jpg"
   },
   {
     "id": "tinker",
     "name": "修补匠",
     "hint": "智力型远程核心，操纵高科技机械，能够激光轰击并反复刷新装备和技能。",
     "roast": "机器都刷新好了，你的答案还没更新。",
-    "image": "./assets/heroes-generated/tinker.svg"
+    "image": "./assets/heroes-generated/final/tinker.jpg"
+  },
+  {
+    "id": "night_stalker",
+    "name": "夜魔",
+    "hint": "力量型近战英雄，夜晚会变得更强，依靠黑暗、沉默和高速追猎压制敌人。",
+    "roast": "天都黑了，你的答案还是没进入夜间模式。",
+    "image": "./assets/heroes-generated/final/night-stalker.jpg"
+  },
+  {
+    "id": "spectre",
+    "name": "幽鬼",
+    "hint": "敏捷型近战核心，身体由暗影能量构成，能够制造幻象并瞬间降临敌人身边。",
+    "roast": "满地图都是她的幻影，你却一个都没认出来。",
+    "image": "./assets/heroes-generated/final/spectre.jpg"
+  },
+  {
+    "id": "dragon_knight",
+    "name": "龙骑士",
+    "hint": "力量型近战核心，身穿重甲并能化身巨龙，以喷火和稳定控制持续作战。",
+    "roast": "人形和龙形都给你看了，还是没对上号。",
+    "image": "./assets/heroes-generated/final/dragon-knight.jpg"
+  },
+  {
+    "id": "pugna",
+    "name": "帕格纳",
+    "hint": "智力型远程英雄，绿色亡灵法师，擅长虚无目标、放置幽冥守卫并吸取生命。",
+    "roast": "生命都快被吸干了，你还没吸收到答案。",
+    "image": "./assets/heroes-generated/final/pugna.jpg"
+  },
+  {
+    "id": "ursa",
+    "name": "熊战士",
+    "hint": "敏捷型近战核心，凶猛熊人造型，依靠连续利爪攻击快速叠加伤害。",
+    "roast": "熊掌已经拍到脸上，你还以为是别的野兽。",
+    "image": "./assets/heroes-generated/final/ursa.jpg"
+  },
+  {
+    "id": "weaver",
+    "name": "编织者",
+    "hint": "敏捷型远程英雄，昆虫外形，能隐身加速并通过时光倒流恢复之前的状态。",
+    "roast": "它把时间倒回去了，也没能挽救这次猜测。",
+    "image": "./assets/heroes-generated/final/weaver.jpg"
+  },
+  {
+    "id": "death_prophet",
+    "name": "死亡先知",
+    "hint": "智力型远程英雄，幽绿色亡灵女法师，能召唤群鬼并吸取敌人的生命。",
+    "roast": "群鬼都出来报名字了，你却没听见。",
+    "image": "./assets/heroes-generated/final/death-prophet.jpg"
+  },
+  {
+    "id": "bounty_hunter",
+    "name": "赏金猎人",
+    "hint": "敏捷型近战英雄，擅长隐身跟踪目标，并通过标记敌人获取额外赏金。",
+    "roast": "赏金都挂出来了，你还是抓错了人。",
+    "image": "./assets/heroes-generated/final/bounty-hunter.jpg"
+  },
+  {
+    "id": "ancient_apparition",
+    "name": "远古冰魄",
+    "hint": "智力型远程辅助，由远古寒冰能量构成，能够释放跨地图冰晶爆轰。",
+    "roast": "屏幕都冻住了，你的记忆也一起结冰。",
+    "image": "./assets/heroes-generated/final/ancient-apparition.jpg"
+  },
+  {
+    "id": "chaos_knight",
+    "name": "混沌骑士",
+    "hint": "力量型近战核心，黑红重甲与战马极具辨识度，能够制造大量强力幻象。",
+    "roast": "混沌可以解释画面，解释不了这个答案。",
+    "image": "./assets/heroes-generated/final/chaos-knight.jpg"
+  },
+  {
+    "id": "morphling",
+    "name": "变体精灵",
+    "hint": "敏捷型远程核心，由水元素组成，能够在力量与敏捷之间转换属性。",
+    "roast": "它已经变了好几次，你的答案一次都没变对。",
+    "image": "./assets/heroes-generated/final/morphling.jpg"
+  },
+  {
+    "id": "dark_seer",
+    "name": "黑暗贤者",
+    "hint": "智力型近战英雄，紫色皮肤与高耸头部醒目，擅长制造真空和复制敌方幻象。",
+    "roast": "墙上的复制体都认出来了，只有你没认出来。",
+    "image": "./assets/heroes-generated/final/dark-seer.jpg"
+  },
+  {
+    "id": "natures_prophet",
+    "name": "先知",
+    "hint": "智力型远程英雄，森林先知造型，能够传送到地图任意位置并召唤树人。",
+    "roast": "他都全球传送到你面前了，你还没发现。",
+    "image": "./assets/heroes-generated/final/natures-prophet.jpg"
+  },
+  {
+    "id": "broodmother",
+    "name": "育母蜘蛛",
+    "hint": "敏捷型近战英雄，巨型蜘蛛造型，能够织网移动并孵化大量小蜘蛛。",
+    "roast": "这么多条腿都没帮你数出正确答案。",
+    "image": "./assets/heroes-generated/final/broodmother.jpg"
+  },
+  {
+    "id": "techies",
+    "name": "工程师",
+    "hint": "智力型远程英雄，由一群爆破专家组成，擅长使用炸弹、粘性爆破和自爆突进。",
+    "roast": "炸弹都引爆了，你的灵感还是哑火。",
+    "image": "./assets/heroes-generated/final/techies.jpg"
+  },
+  {
+    "id": "oracle",
+    "name": "神谕者",
+    "hint": "智力型远程辅助，金蓝法袍与面具醒目，能够预知并改变队友受到的伤害与治疗。",
+    "roast": "未来都看见了，偏偏没看见正确答案。",
+    "image": "./assets/heroes-generated/final/oracle.jpg"
+  },
+  {
+    "id": "omniknight",
+    "name": "全能骑士",
+    "hint": "力量型近战辅助，金色圣骑士造型，擅长治疗、净化并为队友提供物理保护。",
+    "roast": "全能骑士什么都能做，就是替你答题做不到。",
+    "image": "./assets/heroes-generated/final/omniknight.jpg"
+  },
+  {
+    "id": "slardar",
+    "name": "斯拉达",
+    "hint": "力量型近战英雄，深海鱼人战士，能够冲刺、重击并降低敌人护甲。",
+    "roast": "鱼人都踩出水花了，你还是没看清是谁。",
+    "image": "./assets/heroes-generated/final/slardar.jpg"
   }
 ]
