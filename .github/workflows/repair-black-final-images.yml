@@ -21,14 +21,14 @@ jobs:
 
       - name: Install image render dependencies
         run: |
-          python -m pip install --disable-pip-version-check pillow cairosvg
+          python -m pip install --disable-pip-version-check pillow cairosvg numpy
 
       - name: Re-render and validate every generated hero image
         run: |
           python - <<'PYCODE'
           import hashlib
           import json
-          import math
+          from io import BytesIO
           from pathlib import Path
 
           import cairosvg
@@ -84,16 +84,16 @@ jobs:
                   output_width=768,
                   output_height=1024,
               )
-              from io import BytesIO
               with Image.open(BytesIO(png_bytes)) as opened:
-                  image = opened.convert('RGB')
+                  base = opened.convert('RGB')
 
-              image = cover(image)
-              image = ImageOps.autocontrast(image, cutoff=0.25)
+              base = cover(base)
+              base = ImageOps.autocontrast(base, cutoff=0.25)
+              image = base
 
-              # 自适应提亮：暗黑风格保留，但不能再出现整张近黑。
-              for gamma in (0.82, 0.72, 0.62, 0.54):
-                  candidate = gamma_adjust(image, gamma)
+              # 每次都从原始渲染图提亮，避免连续 gamma 造成过曝。
+              for gamma in (0.82, 0.72, 0.62, 0.54, 0.46):
+                  candidate = gamma_adjust(base, gamma)
                   candidate = ImageEnhance.Color(candidate).enhance(1.12)
                   candidate = ImageEnhance.Contrast(candidate).enhance(1.04)
                   current = image_metrics(candidate)
@@ -121,7 +121,7 @@ jobs:
               if current['bytes'] < 12000:
                   raise SystemExit(f'{slug}: output file unexpectedly small: {current}')
 
-              hero['image'] = f'./assets/heroes-generated/final/{slug}.jpg?v=20260806-3'
+              hero['image'] = f'./assets/heroes-generated/final/{slug}.jpg?v=20260806-4'
               repaired.append(slug)
 
           if len(repaired) != 49:
