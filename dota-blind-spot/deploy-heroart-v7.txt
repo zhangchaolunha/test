@@ -1,0 +1,5 @@
+Verified hero artwork deployment
+content commit: eb804b9c6920cfaae9e813ee56cd855601dbe0ce
+hero count: 78
+generated artwork count: 49
+validated at: 2026-08-06
