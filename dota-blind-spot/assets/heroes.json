@@ -72,141 +72,141 @@
   {
     "id": "juggernaut",
     "name": "主宰",
-    "spriteIndex": 0,
     "hint": "敏捷型近战英雄，戴着面具并使用长刀，擅长剑刃风暴与无敌斩。",
-    "roast": "面具和长刀都在，你还是没进入剑圣状态。"
+    "roast": "面具和长刀都在，你还是没进入剑圣状态。",
+    "image": "./assets/heroes-generated/juggernaut.webp"
   },
   {
     "id": "storm_spirit",
     "name": "风暴之灵",
-    "spriteIndex": 1,
     "hint": "智力型远程英雄，蓝色身躯与雷电法术十分醒目。",
-    "roast": "他滚遍了整张图，还是没滚进你的答案。"
+    "roast": "他滚遍了整张图，还是没滚进你的答案。",
+    "image": "./assets/heroes-generated/storm-spirit.webp"
   },
   {
     "id": "templar_assassin",
     "name": "圣堂刺客",
-    "spriteIndex": 2,
     "hint": "敏捷型远程核心，紫色装束、灵能利刃和隐匿能力是她的标志。",
-    "roast": "折光挡住了伤害，也挡住了你的记忆。"
+    "roast": "折光挡住了伤害，也挡住了你的记忆。",
+    "image": "./assets/heroes-generated/templar-assassin.webp"
   },
   {
     "id": "tidehunter",
     "name": "潮汐猎人",
-    "spriteIndex": 3,
     "hint": "力量型近战英雄，体型巨大、来自深海，手持沉重船锚。",
-    "roast": "这么大的海怪都看不见，团战更别指望躲大了。"
+    "roast": "这么大的海怪都看不见，团战更别指望躲大了。",
+    "image": "./assets/heroes-generated/tidehunter.webp"
   },
   {
     "id": "sniper",
     "name": "狙击手",
-    "spriteIndex": 4,
     "hint": "敏捷型远程英雄，矮小身材、护目镜和长枪极具辨识度。",
-    "roast": "射程这么远，答案却没打到。"
+    "roast": "射程这么远，答案却没打到。",
+    "image": "./assets/heroes-generated/sniper.webp"
   },
   {
     "id": "tiny",
     "name": "小小",
-    "spriteIndex": 5,
     "hint": "力量型近战英雄，由岩石组成，会随着成长变得越来越巨大。",
-    "roast": "名字叫小小，画面可一点都不小。"
+    "roast": "名字叫小小，画面可一点都不小。",
+    "image": "./assets/heroes-generated/tiny.webp"
   },
   {
     "id": "zeus",
     "name": "宙斯",
-    "spriteIndex": 6,
     "hint": "智力型远程英雄，白发白须并掌控雷霆。",
-    "roast": "雷都劈到脸上了，你还没认出众神之王。"
+    "roast": "雷都劈到脸上了，你还没认出众神之王。",
+    "image": "./assets/heroes-generated/zeus.webp"
   },
   {
     "id": "queen_of_pain",
     "name": "痛苦女王",
-    "spriteIndex": 7,
     "hint": "智力型远程英雄，恶魔双翼、红色装束和尖啸能力非常醒目。",
-    "roast": "她的尖叫很痛苦，你的答案更痛苦。"
+    "roast": "她的尖叫很痛苦，你的答案更痛苦。",
+    "image": "./assets/heroes-generated/queen-of-pain.webp"
   },
   {
     "id": "riki",
     "name": "力丸",
-    "spriteIndex": 8,
     "hint": "敏捷型近战英雄，擅长隐身、烟幕和从背后发动攻击。",
-    "roast": "隐形刺客隐身成功，连你的记忆也一起消失了。"
+    "roast": "隐形刺客隐身成功，连你的记忆也一起消失了。",
+    "image": "./assets/heroes-generated/riki.webp"
   },
   {
     "id": "antimage_alt",
     "name": "敌法师",
-    "spriteIndex": 9,
     "hint": "敏捷型近战英雄，双持弯刃并擅长闪烁与燃烧魔法。",
-    "roast": "换了一套造型，你就把自己的老对手忘了。"
+    "roast": "换了一套造型，你就把自己的老对手忘了。",
+    "image": "./assets/heroes-generated/antimage-alt.webp"
   },
   {
     "id": "sven",
     "name": "斯温",
-    "spriteIndex": 10,
     "hint": "力量型近战英雄，身穿蓝色重甲并挥舞巨剑。",
-    "roast": "巨剑已经占了半张图，答案还在迷路。"
+    "roast": "巨剑已经占了半张图，答案还在迷路。",
+    "image": "./assets/heroes-generated/sven.webp"
   },
   {
     "id": "legion_commander",
     "name": "军团指挥官",
-    "spriteIndex": 11,
     "hint": "力量型近战英雄，红金战甲、长枪与决斗是她的标志。",
-    "roast": "决斗已经开始，你却把对手名字忘了。"
+    "roast": "决斗已经开始，你却把对手名字忘了。",
+    "image": "./assets/heroes-generated/legion-commander.webp"
   },
   {
     "id": "bloodseeker",
     "name": "血魔",
-    "spriteIndex": 12,
     "hint": "敏捷型近战英雄，嗜血、红色面具与追猎残血敌人是其特征。",
-    "roast": "血腥味都飘出来了，你还是追错了人。"
+    "roast": "血腥味都飘出来了，你还是追错了人。",
+    "image": "./assets/heroes-generated/bloodseeker.webp"
   },
   {
     "id": "mirana",
     "name": "米拉娜",
-    "spriteIndex": 13,
     "hint": "敏捷型远程英雄，骑乘白虎并使用月光长弓。",
-    "roast": "白虎已经扑到面前，这支箭还是射空了。"
+    "roast": "白虎已经扑到面前，这支箭还是射空了。",
+    "image": "./assets/heroes-generated/mirana.webp"
   },
   {
     "id": "kunkka",
     "name": "昆卡",
-    "spriteIndex": 14,
     "hint": "力量型近战英雄，海军上将造型并操控潮汐与幽灵船。",
-    "roast": "船长已经扬帆，你还没找到正确航线。"
+    "roast": "船长已经扬帆，你还没找到正确航线。",
+    "image": "./assets/heroes-generated/kunkka.webp"
   },
   {
     "id": "viper",
     "name": "冥界亚龙",
-    "spriteIndex": 15,
     "hint": "敏捷型远程英雄，绿色毒液、龙形身体与持续毒伤是其特点。",
-    "roast": "毒都快滴到屏幕上了，你还以为它无毒。"
+    "roast": "毒都快滴到屏幕上了，你还以为它无毒。",
+    "image": "./assets/heroes-generated/viper.webp"
   },
   {
     "id": "shadow_shaman",
     "name": "暗影萨满",
-    "spriteIndex": 16,
     "hint": "智力型远程辅助，擅长妖术、枷锁和召唤蛇棒。",
-    "roast": "你可能被变成小动物了，所以没能回答。"
+    "roast": "你可能被变成小动物了，所以没能回答。",
+    "image": "./assets/heroes-generated/shadow-shaman.webp"
   },
   {
     "id": "ogre_magi",
     "name": "食人魔魔法师",
-    "spriteIndex": 17,
     "hint": "智力型近战辅助，蓝色双头食人魔，施法时可能触发多重施法。",
-    "roast": "两个脑袋都认得你，你却没认出它们。"
+    "roast": "两个脑袋都认得你，你却没认出它们。",
+    "image": "./assets/heroes-generated/ogre-magi.webp"
   },
   {
     "id": "terrorblade",
     "name": "恐怖利刃",
-    "spriteIndex": 18,
     "hint": "敏捷型近战核心，恶魔双翼、青色能量与幻象是其标志。",
-    "roast": "倒影里都是答案，你偏偏看向了别处。"
+    "roast": "倒影里都是答案，你偏偏看向了别处。",
+    "image": "./assets/heroes-generated/terrorblade.webp"
   },
   {
     "id": "enigma",
     "name": "谜团",
-    "spriteIndex": 19,
     "hint": "智力型远程英雄，身体如同深邃宇宙，并能制造强大的黑洞。",
-    "roast": "答案被黑洞吸走了，看来不是你的问题。"
+    "roast": "答案被黑洞吸走了，看来不是你的问题。",
+    "image": "./assets/heroes-generated/enigma.webp"
   }
 ]
