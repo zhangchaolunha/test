@@ -33,7 +33,9 @@ jobs:
 
           import cairosvg
           import numpy as np
-          from PIL import Image, ImageEnhance, ImageFilter, ImageOps
+          from PIL import Image, ImageEnhance, ImageFile, ImageFilter, ImageOps
+
+          ImageFile.LOAD_TRUNCATED_IMAGES = True
 
           project = Path('dota-blind-spot')
           manifest_path = project / 'assets' / 'heroes.json'
@@ -91,7 +93,6 @@ jobs:
               base = ImageOps.autocontrast(base, cutoff=0.25)
               image = base
 
-              # 每次都从原始渲染图提亮，避免连续 gamma 造成过曝。
               for gamma in (0.82, 0.72, 0.62, 0.54, 0.46):
                   candidate = gamma_adjust(base, gamma)
                   candidate = ImageEnhance.Color(candidate).enhance(1.12)
@@ -121,7 +122,7 @@ jobs:
               if current['bytes'] < 12000:
                   raise SystemExit(f'{slug}: output file unexpectedly small: {current}')
 
-              hero['image'] = f'./assets/heroes-generated/final/{slug}.jpg?v=20260806-4'
+              hero['image'] = f'./assets/heroes-generated/final/{slug}.jpg?v=20260806-5'
               repaired.append(slug)
 
           if len(repaired) != 49:
