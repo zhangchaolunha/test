@@ -1,0 +1,171 @@
+name: Repair black DOTA final hero images
+
+on:
+  push:
+    paths:
+      - '.github/workflows/repair-black-final-images.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install image render dependencies
+        run: |
+          python -m pip install --disable-pip-version-check pillow cairosvg
+
+      - name: Re-render and validate every generated hero image
+        run: |
+          python - <<'PYCODE'
+          import hashlib
+          import json
+          import math
+          from pathlib import Path
+
+          import cairosvg
+          import numpy as np
+          from PIL import Image, ImageEnhance, ImageFilter, ImageOps
+
+          project = Path('dota-blind-spot')
+          manifest_path = project / 'assets' / 'heroes.json'
+          svg_dir = project / 'assets' / 'heroes-generated' / 'self-contained'
+          final_dir = project / 'assets' / 'heroes-generated' / 'final'
+          final_dir.mkdir(parents=True, exist_ok=True)
+
+          heroes = json.loads(manifest_path.read_text(encoding='utf-8'))
+          repaired = []
+          metrics = {}
+
+          def gamma_adjust(image, gamma):
+              arr = np.asarray(image).astype(np.float32) / 255.0
+              arr = np.power(arr, gamma)
+              return Image.fromarray(np.clip(arr * 255.0, 0, 255).astype(np.uint8), 'RGB')
+
+          def cover(image, size=(512, 768)):
+              ratio = max(size[0] / image.width, size[1] / image.height)
+              resized = image.resize(
+                  (max(1, round(image.width * ratio)), max(1, round(image.height * ratio))),
+                  Image.Resampling.LANCZOS,
+              )
+              left = max(0, (resized.width - size[0]) // 2)
+              top = max(0, (resized.height - size[1]) // 2)
+              return resized.crop((left, top, left + size[0], top + size[1]))
+
+          def image_metrics(image):
+              gray = np.asarray(image.convert('L'))
+              return {
+                  'mean': round(float(gray.mean()), 2),
+                  'std': round(float(gray.std()), 2),
+                  'p95': round(float(np.percentile(gray, 95)), 2),
+                  'dark_ratio': round(float((gray < 12).mean()), 4),
+              }
+
+          for hero in heroes:
+              image_path = hero.get('image', '')
+              if '/self-contained/' not in image_path or not image_path.endswith('.svg'):
+                  continue
+
+              slug = Path(image_path).stem
+              svg_path = svg_dir / f'{slug}.svg'
+              if not svg_path.exists():
+                  raise SystemExit(f'missing source SVG: {svg_path}')
+
+              png_bytes = cairosvg.svg2png(
+                  bytestring=svg_path.read_bytes(),
+                  output_width=768,
+                  output_height=1024,
+              )
+              from io import BytesIO
+              with Image.open(BytesIO(png_bytes)) as opened:
+                  image = opened.convert('RGB')
+
+              image = cover(image)
+              image = ImageOps.autocontrast(image, cutoff=0.25)
+
+              # 自适应提亮：暗黑风格保留，但不能再出现整张近黑。
+              for gamma in (0.82, 0.72, 0.62, 0.54):
+                  candidate = gamma_adjust(image, gamma)
+                  candidate = ImageEnhance.Color(candidate).enhance(1.12)
+                  candidate = ImageEnhance.Contrast(candidate).enhance(1.04)
+                  current = image_metrics(candidate)
+                  image = candidate
+                  if current['mean'] >= 52 and current['p95'] >= 118 and current['dark_ratio'] <= 0.20:
+                      break
+
+              image = image.filter(ImageFilter.UnsharpMask(radius=1.0, percent=105, threshold=3))
+              output_path = final_dir / f'{slug}.jpg'
+              image.save(output_path, 'JPEG', quality=90, optimize=True, progressive=True)
+
+              current = image_metrics(image)
+              current['bytes'] = output_path.stat().st_size
+              current['sha256'] = hashlib.sha256(output_path.read_bytes()).hexdigest()
+              metrics[slug] = current
+
+              if current['mean'] < 45:
+                  raise SystemExit(f'{slug}: mean brightness too low: {current}')
+              if current['std'] < 24:
+                  raise SystemExit(f'{slug}: image lacks visible detail: {current}')
+              if current['p95'] < 105:
+                  raise SystemExit(f'{slug}: highlights too dark: {current}')
+              if current['dark_ratio'] > 0.28:
+                  raise SystemExit(f'{slug}: excessive black area: {current}')
+              if current['bytes'] < 12000:
+                  raise SystemExit(f'{slug}: output file unexpectedly small: {current}')
+
+              hero['image'] = f'./assets/heroes-generated/final/{slug}.jpg?v=20260806-3'
+              repaired.append(slug)
+
+          if len(repaired) != 49:
+              raise SystemExit(f'expected 49 repaired generated heroes, got {len(repaired)}')
+
+          ids = [h['id'] for h in heroes]
+          names = [h['name'] for h in heroes]
+          if len(ids) != len(set(ids)) or len(names) != len(set(names)):
+              raise SystemExit('duplicate hero id or name')
+
+          missing = []
+          for hero in heroes:
+              relative = hero['image'].split('?', 1)[0].removeprefix('./')
+              if not (project / relative).exists():
+                  missing.append(hero['image'])
+          if missing:
+              raise SystemExit('missing referenced images: ' + ', '.join(missing))
+
+          hashes = [metrics[slug]['sha256'] for slug in repaired]
+          if len(hashes) != len(set(hashes)):
+              raise SystemExit('duplicate repaired JPG byte content detected')
+
+          manifest_path.write_text(
+              json.dumps(heroes, ensure_ascii=False, indent=2) + '\n',
+              encoding='utf-8',
+          )
+          (final_dir / 'validation.json').write_text(
+              json.dumps(metrics, ensure_ascii=False, indent=2) + '\n',
+              encoding='utf-8',
+          )
+
+          print('hero records:', len(heroes))
+          print('repaired final JPG files:', len(repaired))
+          print('minimum mean brightness:', min(v['mean'] for v in metrics.values()))
+          print('maximum dark ratio:', max(v['dark_ratio'] for v in metrics.values()))
+          PYCODE
+
+      - name: Commit repaired hero assets
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add dota-blind-spot/assets/heroes.json \
+                  dota-blind-spot/assets/heroes-generated/final
+          git diff --cached --quiet || (
+            git commit -m "fix: replace all black generated hero images" &&
+            git push
+          )
