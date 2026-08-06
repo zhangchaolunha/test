@@ -20,22 +20,20 @@ jobs:
           python-version: '3.12'
 
       - name: Install image render dependencies
-        run: |
-          python -m pip install --disable-pip-version-check pillow cairosvg numpy
+        run: python -m pip install --disable-pip-version-check pillow cairosvg numpy
 
-      - name: Re-render and validate every generated hero image
+      - name: Rebuild and validate all generated hero images
         run: |
           python - <<'PYCODE'
           import hashlib
           import json
+          import re
           from io import BytesIO
           from pathlib import Path
 
           import cairosvg
           import numpy as np
-          from PIL import Image, ImageEnhance, ImageFile, ImageFilter, ImageOps
-
-          ImageFile.LOAD_TRUNCATED_IMAGES = True
+          from PIL import Image, ImageChops, ImageEnhance, ImageFilter, ImageOps
 
           project = Path('dota-blind-spot')
           manifest_path = project / 'assets' / 'heroes.json'
@@ -47,42 +45,75 @@ jobs:
           repaired = []
           metrics = {}
 
+          def cover(image, size=(512, 768)):
+              ratio = max(size[0] / image.width, size[1] / image.height)
+              resized = image.resize(
+                  (round(image.width * ratio), round(image.height * ratio)),
+                  Image.Resampling.LANCZOS,
+              )
+              left = (resized.width - size[0]) // 2
+              top = max(0, round((resized.height - size[1]) * 0.38))
+              return resized.crop((left, top, left + size[0], top + size[1]))
+
           def gamma_adjust(image, gamma):
               arr = np.asarray(image).astype(np.float32) / 255.0
               arr = np.power(arr, gamma)
               return Image.fromarray(np.clip(arr * 255.0, 0, 255).astype(np.uint8), 'RGB')
 
-          def cover(image, size=(512, 768)):
-              ratio = max(size[0] / image.width, size[1] / image.height)
-              resized = image.resize(
-                  (max(1, round(image.width * ratio)), max(1, round(image.height * ratio))),
-                  Image.Resampling.LANCZOS,
-              )
-              left = max(0, (resized.width - size[0]) // 2)
-              top = max(0, (resized.height - size[1]) // 2)
-              return resized.crop((left, top, left + size[0], top + size[1]))
+          def add_center_glow(image, slug):
+              seed = int(hashlib.sha256(slug.encode()).hexdigest()[:8], 16)
+              color = np.array([
+                  45 + seed % 38,
+                  38 + (seed >> 7) % 42,
+                  55 + (seed >> 13) % 52,
+              ], dtype=np.float32)
+              h, w = image.height, image.width
+              yy, xx = np.ogrid[:h, :w]
+              cx, cy = w * 0.5, h * 0.43
+              distance = ((xx - cx) / (w * 0.64)) ** 2 + ((yy - cy) / (h * 0.66)) ** 2
+              strength = np.clip(1.0 - distance, 0, 1) ** 1.5
+              glow = np.zeros((h, w, 3), dtype=np.uint8)
+              glow[:] = np.clip(strength[..., None] * color, 0, 255).astype(np.uint8)
+              return ImageChops.screen(image, Image.fromarray(glow, 'RGB'))
 
           def image_metrics(image):
               gray = np.asarray(image.convert('L'))
+              center = gray[
+                  round(gray.shape[0] * 0.18):round(gray.shape[0] * 0.82),
+                  round(gray.shape[1] * 0.18):round(gray.shape[1] * 0.82),
+              ]
               return {
                   'mean': round(float(gray.mean()), 2),
                   'std': round(float(gray.std()), 2),
                   'p95': round(float(np.percentile(gray, 95)), 2),
                   'dark_ratio': round(float((gray < 12).mean()), 4),
+                  'center_mean': round(float(center.mean()), 2),
+                  'center_std': round(float(center.std()), 2),
+                  'center_p90': round(float(np.percentile(center, 90)), 2),
               }
 
           for hero in heroes:
-              image_path = hero.get('image', '')
-              if '/self-contained/' not in image_path or not image_path.endswith('.svg'):
+              source_path = hero.get('image', '').split('?', 1)[0]
+              if '/self-contained/' not in source_path or not source_path.endswith('.svg'):
                   continue
 
-              slug = Path(image_path).stem
+              slug = Path(source_path).stem
               svg_path = svg_dir / f'{slug}.svg'
-              if not svg_path.exists():
-                  raise SystemExit(f'missing source SVG: {svg_path}')
+              svg_text = svg_path.read_text(encoding='utf-8')
+
+              # 彻底移除旧 SVG 中引用损坏 JPEG 的嵌套图层，只保留完整矢量造型。
+              svg_text, removed = re.subn(
+                  r'<g\s+clip-path="url\(#portrait\)".*?</g>',
+                  '',
+                  svg_text,
+                  count=1,
+                  flags=re.S,
+              )
+              if removed != 1:
+                  raise SystemExit(f'{slug}: broken embedded image layer not found')
 
               png_bytes = cairosvg.svg2png(
-                  bytestring=svg_path.read_bytes(),
+                  bytestring=svg_text.encode('utf-8'),
                   output_width=768,
                   output_height=1024,
               )
@@ -90,74 +121,68 @@ jobs:
                   base = opened.convert('RGB')
 
               base = cover(base)
-              base = ImageOps.autocontrast(base, cutoff=0.25)
-              image = base
+              base = add_center_glow(base, slug)
+              base = ImageOps.autocontrast(base, cutoff=0.2)
 
-              for gamma in (0.82, 0.72, 0.62, 0.54, 0.46):
+              image = base
+              for gamma in (0.86, 0.78, 0.70, 0.62, 0.54):
                   candidate = gamma_adjust(base, gamma)
-                  candidate = ImageEnhance.Color(candidate).enhance(1.12)
+                  candidate = ImageEnhance.Color(candidate).enhance(1.16)
                   candidate = ImageEnhance.Contrast(candidate).enhance(1.04)
                   current = image_metrics(candidate)
                   image = candidate
-                  if current['mean'] >= 52 and current['p95'] >= 118 and current['dark_ratio'] <= 0.20:
+                  if current['mean'] >= 58 and current['center_mean'] >= 72 and current['center_p90'] >= 125:
                       break
 
-              image = image.filter(ImageFilter.UnsharpMask(radius=1.0, percent=105, threshold=3))
+              image = image.filter(ImageFilter.UnsharpMask(radius=1.1, percent=115, threshold=3))
               output_path = final_dir / f'{slug}.jpg'
-              image.save(output_path, 'JPEG', quality=90, optimize=True, progressive=True)
+              image.save(output_path, 'JPEG', quality=91, optimize=True, progressive=True)
 
               current = image_metrics(image)
               current['bytes'] = output_path.stat().st_size
               current['sha256'] = hashlib.sha256(output_path.read_bytes()).hexdigest()
               metrics[slug] = current
 
-              if current['mean'] < 45:
-                  raise SystemExit(f'{slug}: mean brightness too low: {current}')
-              if current['std'] < 24:
-                  raise SystemExit(f'{slug}: image lacks visible detail: {current}')
-              if current['p95'] < 105:
-                  raise SystemExit(f'{slug}: highlights too dark: {current}')
-              if current['dark_ratio'] > 0.28:
-                  raise SystemExit(f'{slug}: excessive black area: {current}')
-              if current['bytes'] < 12000:
+              if current['mean'] < 55:
+                  raise SystemExit(f'{slug}: whole image still too dark: {current}')
+              if current['center_mean'] < 68:
+                  raise SystemExit(f'{slug}: hero center still too dark: {current}')
+              if current['center_std'] < 28:
+                  raise SystemExit(f'{slug}: hero center lacks visible detail: {current}')
+              if current['center_p90'] < 115:
+                  raise SystemExit(f'{slug}: hero highlights are too dark: {current}')
+              if current['bytes'] < 15000:
                   raise SystemExit(f'{slug}: output file unexpectedly small: {current}')
 
-              hero['image'] = f'./assets/heroes-generated/final/{slug}.jpg?v=20260806-5'
+              hero['image'] = f'./assets/heroes-generated/final/{slug}.jpg?v=20260806-vector6'
               repaired.append(slug)
 
           if len(repaired) != 49:
-              raise SystemExit(f'expected 49 repaired generated heroes, got {len(repaired)}')
+              raise SystemExit(f'expected 49 repaired images, got {len(repaired)}')
 
           ids = [h['id'] for h in heroes]
           names = [h['name'] for h in heroes]
           if len(ids) != len(set(ids)) or len(names) != len(set(names)):
               raise SystemExit('duplicate hero id or name')
 
-          missing = []
           for hero in heroes:
               relative = hero['image'].split('?', 1)[0].removeprefix('./')
               if not (project / relative).exists():
-                  missing.append(hero['image'])
-          if missing:
-              raise SystemExit('missing referenced images: ' + ', '.join(missing))
+                  raise SystemExit(f'missing referenced image: {hero["image"]}')
 
           hashes = [metrics[slug]['sha256'] for slug in repaired]
           if len(hashes) != len(set(hashes)):
-              raise SystemExit('duplicate repaired JPG byte content detected')
+              raise SystemExit('duplicate repaired image content detected')
 
-          manifest_path.write_text(
-              json.dumps(heroes, ensure_ascii=False, indent=2) + '\n',
-              encoding='utf-8',
-          )
-          (final_dir / 'validation.json').write_text(
-              json.dumps(metrics, ensure_ascii=False, indent=2) + '\n',
-              encoding='utf-8',
-          )
+          manifest_path.write_text(json.dumps(heroes, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+          (final_dir / 'validation.json').write_text(json.dumps(metrics, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
 
           print('hero records:', len(heroes))
           print('repaired final JPG files:', len(repaired))
-          print('minimum mean brightness:', min(v['mean'] for v in metrics.values()))
-          print('maximum dark ratio:', max(v['dark_ratio'] for v in metrics.values()))
+          print('minimum whole mean:', min(v['mean'] for v in metrics.values()))
+          print('minimum center mean:', min(v['center_mean'] for v in metrics.values()))
+          print('minimum center p90:', min(v['center_p90'] for v in metrics.values()))
+          print('ursa:', metrics['ursa'])
           PYCODE
 
       - name: Commit repaired hero assets
