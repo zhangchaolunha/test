@@ -208,5 +208,75 @@
     "hint": "智力型远程英雄，身体如同深邃宇宙，并能制造强大的黑洞。",
     "roast": "答案被黑洞吸走了，看来不是你的问题。",
     "image": "./assets/heroes-generated/enigma.webp"
+  },
+  {
+    "id": "earthshaker",
+    "name": "撼地者",
+    "image": "./assets/heroes-generated/earthshaker.svg",
+    "hint": "力量型近战英雄，牛头战士造型，擅长制造沟壑并以回音击震碎战场。",
+    "roast": "大地都震了三次，你的答案还是纹丝不动。"
+  },
+  {
+    "id": "puck",
+    "name": "帕克",
+    "image": "./assets/heroes-generated/puck.svg",
+    "hint": "智力型远程英雄，外形如梦幻仙龙，能够相位转移并用梦境缠绕敌人。",
+    "roast": "它已经躲进异次元，你的正确答案也跟着消失了。"
+  },
+  {
+    "id": "rubick",
+    "name": "拉比克",
+    "image": "./assets/heroes-generated/rubick.svg",
+    "hint": "智力型远程辅助，绿色斗篷与法杖醒目，最著名的能力是窃取敌方技能。",
+    "roast": "技能都偷到了，唯独没偷到你的正确答案。"
+  },
+  {
+    "id": "faceless_void",
+    "name": "虚空假面",
+    "image": "./assets/heroes-generated/faceless-void.svg",
+    "hint": "敏捷型近战核心，紫色无面身体，能够操控时间并制造时间结界。",
+    "roast": "时间都暂停了，你还是没来得及认出来。"
+  },
+  {
+    "id": "luna",
+    "name": "露娜",
+    "image": "./assets/heroes-generated/luna.svg",
+    "hint": "敏捷型远程核心，银蓝战甲并骑乘黑豹，以月刃和月蚀闻名。",
+    "roast": "月光这么亮，仍然没照见你的答案。"
+  },
+  {
+    "id": "slark",
+    "name": "斯拉克",
+    "image": "./assets/heroes-generated/slark.svg",
+    "hint": "敏捷型近战英雄，深海鱼人外形，擅长突袭、偷取属性并藏入暗影。",
+    "roast": "小鱼人已经溜走，顺便带走了你的判断力。"
+  },
+  {
+    "id": "ember_spirit",
+    "name": "灰烬之灵",
+    "image": "./assets/heroes-generated/ember-spirit.svg",
+    "hint": "敏捷型近战英雄，火焰武者造型，使用双刀与残焰高速穿梭战场。",
+    "roast": "残焰飞了满屏，你却没跟上正确答案。"
+  },
+  {
+    "id": "monkey_king",
+    "name": "齐天大圣",
+    "image": "./assets/heroes-generated/monkey-king.svg",
+    "hint": "敏捷型近战英雄，猴王造型并手持长棍，能够腾跃树梢和召唤猴兵。",
+    "roast": "金箍棒已经伸到脸上，你还在猜别的英雄。"
+  },
+  {
+    "id": "dawnbreaker",
+    "name": "破晓辰星",
+    "image": "./assets/heroes-generated/dawnbreaker.svg",
+    "hint": "力量型近战英雄，金色天界战士，手持巨大战锤并能跨地图支援队友。",
+    "roast": "天都亮了，你的答案还停留在黑夜。"
+  },
+  {
+    "id": "mars",
+    "name": "玛尔斯",
+    "image": "./assets/heroes-generated/mars.svg",
+    "hint": "力量型近战英雄，红金盔甲，手持长矛和巨盾并能创造竞技场。",
+    "roast": "竞技场都搭好了，你却认错了主角。"
   }
 ]
