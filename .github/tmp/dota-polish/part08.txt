@@ -1,0 +1,90 @@
+    }
+
+    async function startSession(repick = true) {
+      clearInterval(timer);
+      if (repick) {
+        rounds = pickUniqueNames(pool, GAME_SIZE);
+        await Promise.all(rounds.map((item) => preloadImage(item.image)));
+      }
+      round = 0;
+      totalScore = 0;
+      streak = 0;
+      results = [];
+      renderRound();
+    }
+
+    function renderRoundStrip() {
+      $('roundStrip').innerHTML = Array.from({ length: GAME_SIZE }, (_, index) => {
+        let state = '';
+        if (index === round && !answered) state = 'current';
+        if (index < results.length) state = results[index].correct ? 'success' : 'failed';
+        return `<div class="round-node ${state}"><span>第 ${index + 1} 关</span></div>`;
+      }).join('');
+    }
+
+    function renderRound() {
+      const question = rounds[round];
+      attempt = 0;
+      currentScore = 1000;
+      seconds = ROUND_TIME;
+      hintUsed = false;
+      answered = false;
+
+      $('stage').classList.remove('success');
+      $('timerCard').classList.remove('alert');
+      root.style.setProperty('--reveal', REVEAL[0] + 'px');
+      setFogPoint(pickFogPoint());
+      applyVisual($('backdrop'), question);
+      applyVisual($('portrait'), question);
+
+      $('progress').textContent = `${round + 1} / ${GAME_SIZE}`;
+      $('score').textContent = '1,000';
+      $('streak').textContent = streak;
+      $('timer').textContent = ROUND_TIME + 's';
+      $('visible').textContent = VISIBLE[0];
+      $('attemptLabel').textContent = '第 1 次猜测';
+      $('visionState').textContent = '离散侦察点';
+      $('positionTip').textContent = '侦察位置已锁定';
+      $('footTip').textContent = '猜错一次，扩大视野并切换到另一处侦察点';
+      $('hint').innerHTML = '<b>先知提示：</b>暂未使用真视。越早答对，分数越高。';
+      $('hintBtn').disabled = false;
+      $('skipBtn').disabled = false;
+
+      renderDots();
+      renderOptions(question);
+      renderRoundStrip();
+      clearInterval(timer);
+      timer = setInterval(tick, 1000);
+    }
+
+    function renderDots() {
+      $('dots').innerHTML = Array.from({ length: 5 }, (_, index) => `<i class="${index < attempt ? 'used' : ''}"></i>`).join('');
+    }
+
+    function renderOptions(question) {
+      const decoys = pickUniqueNames(pool.filter((item) => item.id !== question.id), 5, question.name);
+      const options = shuffle([question, ...decoys]);
+      $('options').innerHTML = options.map((item, index) => `
+        <button class="option" data-id="${item.id}">
+          <span>${item.name}</span><kbd>${index + 1}</kbd>
+        </button>
+      `).join('');
+      $('options').querySelectorAll('.option').forEach((button) => {
+        button.addEventListener('click', () => guess(button, button.dataset.id));
+      });
+    }
+
+    function updateScore() {
+      $('score').textContent = currentScore.toLocaleString();
+    }
+
+    function tick() {
+      if (answered) return;
+      seconds--;
+      currentScore = Math.max(100, currentScore - 3);
+      $('timer').textContent = seconds + 's';
+      updateScore();
+      if (seconds <= 10) $('timerCard').classList.add('alert');
+      if (seconds <= 0) finish(false, true);
+    }
+
