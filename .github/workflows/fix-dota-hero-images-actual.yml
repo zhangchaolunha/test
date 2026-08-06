@@ -1,0 +1,89 @@
+name: Fix DOTA hero images and use actual unique count
+
+on:
+  push:
+    paths:
+      - '.github/workflows/fix-dota-hero-images-actual.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check pillow
+      - name: Generate independent images and update manifest
+        env:
+          CROPS_JSON: |
+            {"earthshaker": {"sheet": 1, "ref": [1306, 1204], "box": [8, 58, 241, 425]}, "puck": {"sheet": 1, "ref": [1306, 1204], "box": [253, 58, 497, 425]}, "rubick": {"sheet": 1, "ref": [1306, 1204], "box": [509, 58, 752, 425]}, "faceless-void": {"sheet": 1, "ref": [1306, 1204], "box": [764, 58, 1010, 425]}, "luna": {"sheet": 1, "ref": [1306, 1204], "box": [1022, 58, 1267, 425]}, "slark": {"sheet": 1, "ref": [1306, 1204], "box": [8, 529, 241, 895]}, "ember-spirit": {"sheet": 1, "ref": [1306, 1204], "box": [253, 529, 497, 895]}, "monkey-king": {"sheet": 1, "ref": [1306, 1204], "box": [509, 529, 752, 895]}, "dawnbreaker": {"sheet": 1, "ref": [1306, 1204], "box": [764, 529, 1010, 895]}, "mars": {"sheet": 1, "ref": [1306, 1204], "box": [1022, 529, 1267, 895]}, "treant-protector": {"sheet": 2, "ref": [1306, 1204], "box": [11, 47, 132, 308]}, "lich": {"sheet": 2, "ref": [1306, 1204], "box": [392, 47, 513, 308]}, "naga-siren": {"sheet": 2, "ref": [1306, 1204], "box": [519, 47, 640, 308]}, "gyrocopter": {"sheet": 2, "ref": [1306, 1204], "box": [900, 47, 1021, 308]}, "timbersaw": {"sheet": 2, "ref": [1306, 1204], "box": [1027, 47, 1148, 308]}, "keeper-of-the-light": {"sheet": 2, "ref": [1306, 1204], "box": [1154, 47, 1275, 308]}, "bane": {"sheet": 2, "ref": [1306, 1204], "box": [138, 438, 259, 666]}, "razor": {"sheet": 2, "ref": [1306, 1204], "box": [392, 438, 513, 666]}, "warlock": {"sheet": 2, "ref": [1306, 1204], "box": [519, 438, 640, 666]}, "brewmaster": {"sheet": 2, "ref": [1306, 1204], "box": [773, 438, 894, 666]}, "beastmaster": {"sheet": 2, "ref": [1306, 1204], "box": [1027, 438, 1148, 666]}, "witch-doctor": {"sheet": 2, "ref": [1306, 1204], "box": [1154, 438, 1275, 666]}, "doom": {"sheet": 2, "ref": [1306, 1204], "box": [11, 819, 132, 1054]}, "medusa": {"sheet": 2, "ref": [1306, 1204], "box": [138, 819, 259, 1054]}, "wraith-king": {"sheet": 2, "ref": [1306, 1204], "box": [265, 819, 386, 1054]}, "sand-king": {"sheet": 2, "ref": [1306, 1204], "box": [646, 819, 767, 1054]}, "clockwerk": {"sheet": 2, "ref": [1306, 1204], "box": [773, 819, 894, 1054]}, "abaddon": {"sheet": 2, "ref": [1306, 1204], "box": [900, 819, 1021, 1054]}, "tusk": {"sheet": 2, "ref": [1306, 1204], "box": [1154, 819, 1275, 1054]}, "lion": {"sheet": 3, "ref": [1306, 1204], "box": [265, 70, 386, 316]}, "tinker": {"sheet": 3, "ref": [1306, 1204], "box": [392, 70, 513, 316]}, "night-stalker": {"sheet": 3, "ref": [1306, 1204], "box": [646, 70, 767, 316]}, "spectre": {"sheet": 3, "ref": [1306, 1204], "box": [11, 421, 132, 666]}, "dragon-knight": {"sheet": 3, "ref": [1306, 1204], "box": [392, 421, 513, 666]}, "pugna": {"sheet": 3, "ref": [1306, 1204], "box": [900, 421, 1021, 666]}, "ursa": {"sheet": 3, "ref": [1306, 1204], "box": [1027, 421, 1148, 666]}, "weaver": {"sheet": 3, "ref": [1306, 1204], "box": [11, 761, 132, 1005]}, "death-prophet": {"sheet": 3, "ref": [1306, 1204], "box": [392, 761, 513, 1005]}, "bounty-hunter": {"sheet": 3, "ref": [1306, 1204], "box": [1027, 761, 1148, 1005]}, "ancient-apparition": {"sheet": 3, "ref": [1306, 1204], "box": [1154, 761, 1275, 1005]}, "chaos-knight": {"sheet": 4, "ref": [1254, 1254], "box": [4, 40, 121, 255]}, "morphling": {"sheet": 4, "ref": [1254, 1254], "box": [882, 40, 999, 255]}, "dark-seer": {"sheet": 4, "ref": [1254, 1254], "box": [1007, 40, 1125, 255]}, "natures-prophet": {"sheet": 4, "ref": [1254, 1254], "box": [1133, 40, 1250, 255]}, "broodmother": {"sheet": 4, "ref": [1254, 1254], "box": [4, 430, 121, 650]}, "techies": {"sheet": 4, "ref": [1254, 1254], "box": [756, 430, 874, 650]}, "oracle": {"sheet": 4, "ref": [1254, 1254], "box": [1133, 430, 1250, 650]}, "omniknight": {"sheet": 4, "ref": [1254, 1254], "box": [506, 820, 623, 1035]}, "slardar": {"sheet": 4, "ref": [1254, 1254], "box": [631, 820, 748, 1035]}}
+          EXTRA_JSON: |
+            [["night_stalker", "夜魔", "力量型近战英雄，夜晚会变得更强，依靠黑暗、沉默和高速追猎压制敌人。", "天都黑了，你的答案还是没进入夜间模式。", "night-stalker"], ["spectre", "幽鬼", "敏捷型近战核心，身体由暗影能量构成，能够制造幻象并瞬间降临敌人身边。", "满地图都是她的幻影，你却一个都没认出来。", "spectre"], ["dragon_knight", "龙骑士", "力量型近战核心，身穿重甲并能化身巨龙，以喷火和稳定控制持续作战。", "人形和龙形都给你看了，还是没对上号。", "dragon-knight"], ["pugna", "帕格纳", "智力型远程英雄，绿色亡灵法师，擅长虚无目标、放置幽冥守卫并吸取生命。", "生命都快被吸干了，你还没吸收到答案。", "pugna"], ["ursa", "熊战士", "敏捷型近战核心，凶猛熊人造型，依靠连续利爪攻击快速叠加伤害。", "熊掌已经拍到脸上，你还以为是别的野兽。", "ursa"], ["weaver", "编织者", "敏捷型远程英雄，昆虫外形，能隐身加速并通过时光倒流恢复之前的状态。", "它把时间倒回去了，也没能挽救这次猜测。", "weaver"], ["death_prophet", "死亡先知", "智力型远程英雄，幽绿色亡灵女法师，能召唤群鬼并吸取敌人的生命。", "群鬼都出来报名字了，你却没听见。", "death-prophet"], ["bounty_hunter", "赏金猎人", "敏捷型近战英雄，擅长隐身跟踪目标，并通过标记敌人获取额外赏金。", "赏金都挂出来了，你还是抓错了人。", "bounty-hunter"], ["ancient_apparition", "远古冰魄", "智力型远程辅助，由远古寒冰能量构成，能够释放跨地图冰晶爆轰。", "屏幕都冻住了，你的记忆也一起结冰。", "ancient-apparition"], ["chaos_knight", "混沌骑士", "力量型近战核心，黑红重甲与战马极具辨识度，能够制造大量强力幻象。", "混沌可以解释画面，解释不了这个答案。", "chaos-knight"], ["morphling", "变体精灵", "敏捷型远程核心，由水元素组成，能够在力量与敏捷之间转换属性。", "它已经变了好几次，你的答案一次都没变对。", "morphling"], ["dark_seer", "黑暗贤者", "智力型近战英雄，紫色皮肤与高耸头部醒目，擅长制造真空和复制敌方幻象。", "墙上的复制体都认出来了，只有你没认出来。", "dark-seer"], ["natures_prophet", "先知", "智力型远程英雄，森林先知造型，能够传送到地图任意位置并召唤树人。", "他都全球传送到你面前了，你还没发现。", "natures-prophet"], ["broodmother", "育母蜘蛛", "敏捷型近战英雄，巨型蜘蛛造型，能够织网移动并孵化大量小蜘蛛。", "这么多条腿都没帮你数出正确答案。", "broodmother"], ["techies", "工程师", "智力型远程英雄，由一群爆破专家组成，擅长使用炸弹、粘性爆破和自爆突进。", "炸弹都引爆了，你的灵感还是哑火。", "techies"], ["oracle", "神谕者", "智力型远程辅助，金蓝法袍与面具醒目，能够预知并改变队友受到的伤害与治疗。", "未来都看见了，偏偏没看见正确答案。", "oracle"], ["omniknight", "全能骑士", "力量型近战辅助，金色圣骑士造型，擅长治疗、净化并为队友提供物理保护。", "全能骑士什么都能做，就是替你答题做不到。", "omniknight"], ["slardar", "斯拉达", "力量型近战英雄，深海鱼人战士，能够冲刺、重击并降低敌人护甲。", "鱼人都踩出水花了，你还是没看清是谁。", "slardar"]]
+        run: |
+          python - <<'PYCODE'
+          import json, os
+          from pathlib import Path
+          from PIL import Image, ImageOps
+
+          project = Path('dota-blind-spot')
+          generated = project / 'assets' / 'heroes-generated'
+          source_dir = generated / 'sheets'
+          output_dir = generated / 'final'
+          output_dir.mkdir(parents=True, exist_ok=True)
+
+          crops = json.loads(os.environ['CROPS_JSON'])
+          for slug, spec in crops.items():
+              image = Image.open(source_dir / f"ai-sheet-{spec['sheet']}.jpg").convert('RGB')
+              ref_w, ref_h = spec['ref']
+              left, top, right, bottom = spec['box']
+              box = (round(left*image.width/ref_w), round(top*image.height/ref_h), round(right*image.width/ref_w), round(bottom*image.height/ref_h))
+              crop = image.crop(box)
+              canvas = Image.new('RGB', (512, 768), (5, 6, 8))
+              fitted = ImageOps.contain(crop, (512, 768), Image.Resampling.LANCZOS)
+              canvas.paste(fitted, ((512-fitted.width)//2, (768-fitted.height)//2))
+              canvas.save(output_dir / f'{slug}.jpg', 'JPEG', quality=92, optimize=True)
+
+          manifest = project / 'assets' / 'heroes.json'
+          heroes = json.loads(manifest.read_text(encoding='utf-8'))
+          direct = {
+            'antimage':'./assets/heroes/antimage.svg','invoker':'./assets/heroes/invoker.svg','shadow_fiend':'./assets/heroes/shadow_fiend.svg','axe':'./assets/heroes/axe.svg','pudge':'./assets/heroes/pudge.svg','phantom_assassin':'./assets/heroes/phantom_assassin.svg','drow_ranger':'./assets/heroes/drow_ranger.svg','crystal_maiden':'./assets/heroes/crystal_maiden.svg','lina':'./assets/heroes/lina.svg','windranger':'./assets/heroes/windranger.svg',
+            'juggernaut':'./assets/heroes-generated/juggernaut.webp','storm_spirit':'./assets/heroes-generated/storm-spirit.webp','templar_assassin':'./assets/heroes-generated/templar-assassin.webp','tidehunter':'./assets/heroes-generated/tidehunter.webp','sniper':'./assets/heroes-generated/sniper.webp','tiny':'./assets/heroes-generated/tiny.webp','zeus':'./assets/heroes-generated/zeus.webp','queen_of_pain':'./assets/heroes-generated/queen-of-pain.webp','riki':'./assets/heroes-generated/riki.webp',
+            'sven':'./assets/heroes-generated/sven.webp','legion_commander':'./assets/heroes-generated/legion-commander.webp','bloodseeker':'./assets/heroes-generated/bloodseeker.webp','mirana':'./assets/heroes-generated/mirana.webp','kunkka':'./assets/heroes-generated/kunkka.webp','viper':'./assets/heroes-generated/viper.webp','shadow_shaman':'./assets/heroes-generated/shadow-shaman.webp','ogre_magi':'./assets/heroes-generated/ogre-magi.webp','terrorblade':'./assets/heroes-generated/terrorblade.webp','enigma':'./assets/heroes-generated/enigma.webp'
+          }
+          id_to_slug = {
+            'lich':'lich','earthshaker':'earthshaker','puck':'puck','rubick':'rubick','faceless_void':'faceless-void','luna':'luna','slark':'slark','ember_spirit':'ember-spirit','monkey_king':'monkey-king','dawnbreaker':'dawnbreaker','mars':'mars',
+            'treant_protector':'treant-protector','naga_siren':'naga-siren','gyrocopter':'gyrocopter','timbersaw':'timbersaw','keeper_of_the_light':'keeper-of-the-light','bane':'bane','razor':'razor','warlock':'warlock','brewmaster':'brewmaster','beastmaster':'beastmaster','witch_doctor':'witch-doctor','doom':'doom','medusa':'medusa','wraith_king':'wraith-king','sand_king':'sand-king','clockwerk':'clockwerk','abaddon':'abaddon','tusk':'tusk','lion':'lion','tinker':'tinker'
+          }
+          for hero in heroes:
+              if hero['id'] in direct:
+                  hero['image'] = direct[hero['id']]
+              elif hero['id'] in id_to_slug:
+                  hero['image'] = f"./assets/heroes-generated/final/{id_to_slug[hero['id']]}.jpg"
+
+          existing_ids = {h['id'] for h in heroes}
+          existing_names = {h['name'] for h in heroes}
+          for hero_id, name, hint, roast, slug in json.loads(os.environ['EXTRA_JSON']):
+              if hero_id in existing_ids or name in existing_names:
+                  continue
+              heroes.append({'id':hero_id,'name':name,'hint':hint,'roast':roast,'image':f'./assets/heroes-generated/final/{slug}.jpg'})
+              existing_ids.add(hero_id); existing_names.add(name)
+
+          ids = [h['id'] for h in heroes]; names = [h['name'] for h in heroes]
+          if len(ids) != len(set(ids)) or len(names) != len(set(names)):
+              raise SystemExit('duplicate hero id or name')
+          missing = [h['image'] for h in heroes if not (project / h['image'].removeprefix('./')).exists()]
+          if missing:
+              raise SystemExit('missing images: ' + ', '.join(missing))
+          manifest.write_text(json.dumps(heroes, ensure_ascii=False, indent=2)+'\n', encoding='utf-8')
+          print('actual unique hero count:', len(heroes))
+          PYCODE
+      - name: Commit fixed assets
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add dota-blind-spot/assets/heroes-generated/final dota-blind-spot/assets/heroes.json
+          git diff --cached --quiet || (git commit -m "fix: restore hero images and use actual unique count" && git push)
