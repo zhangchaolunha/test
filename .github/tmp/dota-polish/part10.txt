@@ -1,0 +1,90 @@
+      applyVisual($('resultImg'), question);
+      const last = round === GAME_SIZE - 1;
+      const title = correct ? question.name : '答案：' + question.name;
+      const kicker = correct
+        ? 'VISION CONFIRMED · 识破迷雾'
+        : timedOut
+          ? 'TIME OUT · 视野消失'
+          : 'FAILED · 云玩家警告';
+      const copy = correct ? question.roast : '你成功避开了正确答案。' + question.roast;
+      $('resultBody').innerHTML = `
+        <div class="kicker">${kicker}</div>
+        <h3>${title}</h3>
+        <p>${copy}</p>
+        <div class="stats">
+          <div><span>本题得分</span><strong>${currentScore}</strong></div>
+          <div><span>猜测次数</span><strong>${correct ? attempt + 1 : '—'}</strong></div>
+          <div><span>剩余关卡</span><strong>${GAME_SIZE - round - 1}</strong></div>
+        </div>
+        <button class="btn primary" style="width:100%" id="nextBtn">${last ? '查看今日战绩' : '进入下一题'}</button>
+      `;
+      $('modal').classList.add('show');
+      $('modal').setAttribute('aria-hidden', 'false');
+      $('nextBtn').onclick = () => {
+        $('modal').classList.remove('show');
+        $('modal').setAttribute('aria-hidden', 'true');
+        if (last) showFinal();
+        else {
+          round++;
+          setTimeout(renderRound, 180);
+        }
+      };
+    }
+
+    function buildShareText() {
+      const no = String(dailyNumber()).padStart(3, '0');
+      const blocks = results.map((item) => item.correct ? `🟩${item.attempts}` : '🟥').join(' ');
+      return `战争迷雾 #${no}\n${blocks}\n答对 ${results.filter((item) => item.correct).length}/${GAME_SIZE} · ${totalScore} 分\n英雄池 ${new Set(pool.map((item) => item.name)).size}`;
+    }
+
+    async function shareResult() {
+      const text = buildShareText();
+      try {
+        if (navigator.share) {
+          await navigator.share({ title: '战争迷雾', text });
+          return;
+        }
+        if (navigator.clipboard) {
+          await navigator.clipboard.writeText(text);
+          toast('战绩已复制，可以发给刀友了。');
+          return;
+        }
+        throw new Error('clipboard unavailable');
+      } catch (error) {
+        if (error && error.name === 'AbortError') return;
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        textarea.remove();
+        toast('战绩已复制，可以发给刀友了。');
+      }
+    }
+
+    function showFinal() {
+      const correctCount = results.filter((item) => item.correct).length;
+      const oldBest = Number(localStorage.getItem('dotaFogBest') || 0);
+      const newBest = Math.max(oldBest, totalScore);
+      localStorage.setItem('dotaFogBest', String(newBest));
+      $('bestScore').textContent = newBest.toLocaleString();
+      $('resultImg').style.backgroundImage = 'radial-gradient(circle at 50% 25%, rgba(216,181,106,.22), transparent 28%), linear-gradient(135deg, #3c1511, #0d1012 62%)';
+      $('resultImg').style.backgroundSize = 'cover';
+      $('resultBody').innerHTML = `
+        <div class="kicker">DAILY CHALLENGE COMPLETE</div>
+        <h3>${correctCount >= 4 ? '真视先知' : correctCount >= 2 ? '高地观察员' : '战争迷雾受害者'}</h3>
+        <div class="end">
+          ${results.map((item) => `<span class="${item.correct ? '' : 'fail'}">${item.correct ? '✓ ' + item.attempts + '猜' : '×'}</span>`).join('')}
+        </div>
+        <p>你答对了 <b style="color:#d8b56a">${correctCount}/${GAME_SIZE}</b> 题，总得分 <b style="color:#d8b56a">${totalScore.toLocaleString()}</b>${totalScore >= oldBest && totalScore > 0 ? '，刷新了本机最高纪录。' : '。'}</p>
+        <div class="result-actions">
+          <button class="btn gold-btn" id="shareBtn">分享战绩</button>
+          <button class="btn primary" id="restartBtn">重新随机 5 名英雄</button>
+        </div>
+      `;
+      $('modal').classList.add('show');
+      $('modal').setAttribute('aria-hidden', 'false');
+      $('shareBtn').onclick = shareResult;
+      $('restartBtn').onclick = async () => {
+        $('modal').classList.remove('show');
+        $('modal').setAttribute('aria-hidden', 'true');
