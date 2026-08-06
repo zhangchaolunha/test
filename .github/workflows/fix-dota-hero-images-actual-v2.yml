@@ -1,0 +1,110 @@
+name: Fix DOTA hero images actual count v2
+
+on:
+  push:
+    paths:
+      - '.github/workflows/fix-dota-hero-images-actual-v2.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check pillow
+      - name: Build loadable JPG assets and update manifest
+        run: |
+          python - <<'PYCODE'
+          import json
+          import re
+          from pathlib import Path
+          from PIL import Image, ImageOps, ImageFile
+
+          ImageFile.LOAD_TRUNCATED_IMAGES = True
+          project = Path('dota-blind-spot')
+          generated = project / 'assets' / 'heroes-generated'
+          source_dir = generated / 'sheets'
+          output_dir = generated / 'final'
+          output_dir.mkdir(parents=True, exist_ok=True)
+
+          config = Path('.github/workflows/fix-dota-hero-images-actual.yml').read_text(encoding='utf-8')
+          crops_match = re.search(r'CROPS_JSON: \|\n\s+(\{.*\})\n\s+EXTRA_JSON:', config)
+          extra_match = re.search(r'EXTRA_JSON: \|\n\s+(\[\[.*\]\])\n\s+run:', config)
+          if not crops_match or not extra_match:
+              raise SystemExit('unable to read crop configuration')
+          crops = json.loads(crops_match.group(1))
+          extra = json.loads(extra_match.group(1))
+
+          for slug, spec in crops.items():
+              source = source_dir / f"ai-sheet-{spec['sheet']}.jpg"
+              with Image.open(source) as opened:
+                  image = opened.convert('RGB')
+              ref_w, ref_h = spec['ref']
+              left, top, right, bottom = spec['box']
+              box = (
+                  round(left * image.width / ref_w),
+                  round(top * image.height / ref_h),
+                  round(right * image.width / ref_w),
+                  round(bottom * image.height / ref_h),
+              )
+              crop = image.crop(box)
+              canvas = Image.new('RGB', (512, 768), (5, 6, 8))
+              fitted = ImageOps.contain(crop, (512, 768), Image.Resampling.LANCZOS)
+              canvas.paste(fitted, ((512 - fitted.width) // 2, (768 - fitted.height) // 2))
+              canvas.save(output_dir / f'{slug}.jpg', 'JPEG', quality=92, optimize=True)
+
+          manifest = project / 'assets' / 'heroes.json'
+          heroes = json.loads(manifest.read_text(encoding='utf-8'))
+          direct = {
+              'antimage':'./assets/heroes/antimage.svg','invoker':'./assets/heroes/invoker.svg','shadow_fiend':'./assets/heroes/shadow_fiend.svg','axe':'./assets/heroes/axe.svg','pudge':'./assets/heroes/pudge.svg','phantom_assassin':'./assets/heroes/phantom_assassin.svg','drow_ranger':'./assets/heroes/drow_ranger.svg','crystal_maiden':'./assets/heroes/crystal_maiden.svg','lina':'./assets/heroes/lina.svg','windranger':'./assets/heroes/windranger.svg',
+              'juggernaut':'./assets/heroes-generated/juggernaut.webp','storm_spirit':'./assets/heroes-generated/storm-spirit.webp','templar_assassin':'./assets/heroes-generated/templar-assassin.webp','tidehunter':'./assets/heroes-generated/tidehunter.webp','sniper':'./assets/heroes-generated/sniper.webp','tiny':'./assets/heroes-generated/tiny.webp','zeus':'./assets/heroes-generated/zeus.webp','queen_of_pain':'./assets/heroes-generated/queen-of-pain.webp','riki':'./assets/heroes-generated/riki.webp',
+              'sven':'./assets/heroes-generated/sven.webp','legion_commander':'./assets/heroes-generated/legion-commander.webp','bloodseeker':'./assets/heroes-generated/bloodseeker.webp','mirana':'./assets/heroes-generated/mirana.webp','kunkka':'./assets/heroes-generated/kunkka.webp','viper':'./assets/heroes-generated/viper.webp','shadow_shaman':'./assets/heroes-generated/shadow-shaman.webp','ogre_magi':'./assets/heroes-generated/ogre-magi.webp','terrorblade':'./assets/heroes-generated/terrorblade.webp','enigma':'./assets/heroes-generated/enigma.webp'
+          }
+          generated_ids = {
+              'lich':'lich','earthshaker':'earthshaker','puck':'puck','rubick':'rubick','faceless_void':'faceless-void','luna':'luna','slark':'slark','ember_spirit':'ember-spirit','monkey_king':'monkey-king','dawnbreaker':'dawnbreaker','mars':'mars',
+              'treant_protector':'treant-protector','naga_siren':'naga-siren','gyrocopter':'gyrocopter','timbersaw':'timbersaw','keeper_of_the_light':'keeper-of-the-light','bane':'bane','razor':'razor','warlock':'warlock','brewmaster':'brewmaster','beastmaster':'beastmaster','witch_doctor':'witch-doctor','doom':'doom','medusa':'medusa','wraith_king':'wraith-king','sand_king':'sand-king','clockwerk':'clockwerk','abaddon':'abaddon','tusk':'tusk','lion':'lion','tinker':'tinker'
+          }
+          for hero in heroes:
+              if hero['id'] in direct:
+                  hero['image'] = direct[hero['id']]
+              elif hero['id'] in generated_ids:
+                  hero['image'] = f"./assets/heroes-generated/final/{generated_ids[hero['id']]}.jpg"
+
+          existing_ids = {h['id'] for h in heroes}
+          existing_names = {h['name'] for h in heroes}
+          for hero_id, name, hint, roast, slug in extra:
+              if hero_id in existing_ids or name in existing_names:
+                  continue
+              heroes.append({
+                  'id': hero_id,
+                  'name': name,
+                  'hint': hint,
+                  'roast': roast,
+                  'image': f'./assets/heroes-generated/final/{slug}.jpg'
+              })
+              existing_ids.add(hero_id)
+              existing_names.add(name)
+
+          ids = [h['id'] for h in heroes]
+          names = [h['name'] for h in heroes]
+          if len(ids) != len(set(ids)) or len(names) != len(set(names)):
+              raise SystemExit('duplicate hero id or name')
+          missing = [h['image'] for h in heroes if not (project / h['image'].removeprefix('./')).exists()]
+          if missing:
+              raise SystemExit('missing images: ' + ', '.join(missing))
+          manifest.write_text(json.dumps(heroes, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+          print('actual unique hero count:', len(heroes))
+          print('independent generated images:', len(crops))
+          PYCODE
+      - name: Commit corrected images
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add dota-blind-spot/assets/heroes-generated/final dota-blind-spot/assets/heroes.json
+          git diff --cached --quiet || (git commit -m "fix: restore hero images and use actual unique count" && git push)
