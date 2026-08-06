@@ -1,4 +1,5 @@
 name: Fix DOTA hero images actual count v2
+# rerun tolerant image rebuild
 
 on:
   push:
