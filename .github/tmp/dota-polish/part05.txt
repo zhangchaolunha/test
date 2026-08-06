@@ -1,0 +1,90 @@
+    .end span { min-height: 47px; display: grid; place-items: center; border: 1px solid rgba(117,183,132,.28); border-radius: 8px; background: rgba(117,183,132,.12); color: #9dd3a7; font-size: 12px; font-weight: 800; }
+    .end span.fail { color: #e28b7e; border-color: rgba(210,75,56,.28); background: rgba(210,75,56,.1); }
+    .result-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+    .legal { padding: 18px 0 0; color: #5d6468; font-size: 10px; text-align: center; }
+
+    @media (max-width: 900px) {
+      .nav-item:not(.active), .version { display: none; }
+      .intro { grid-template-columns: 1fr; gap: 14px; }
+      .intro-meta { width: min(100%, 360px); min-width: 0; }
+      .hud { grid-template-columns: repeat(2, 1fr); }
+      .game { grid-template-columns: 1fr; }
+      .stage { height: 480px; }
+    }
+
+    @media (max-width: 560px) {
+      .app { width: calc(100% - 18px); padding-top: 8px; }
+      .topbar { min-height: 58px; }
+      .mark { width: 34px; height: 34px; }
+      .mark::before { left: 13px; top: 3px; height: 28px; }
+      .mark::after { left: 3px; top: 13px; width: 28px; }
+      .brand strong { font-size: 18px; }
+      .intro { padding-top: 24px; }
+      .intro h1 { font-size: 42px; }
+      .round-node { min-height: 31px; font-size: 0; }
+      .round-node::before { width: 9px; height: 9px; }
+      .stage { height: 390px; }
+      .foot { flex-direction: column; align-items: flex-start; }
+      .answer { padding: 13px; }
+      .result-img { height: 235px; }
+      .result-actions { grid-template-columns: 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="loading" id="loading">
+    <div class="loading-box">
+      <div class="loading-mark"></div>
+      <div class="loading-title">战争迷雾</div>
+      <div class="loading-copy" id="loadingCopy">正在校准真视视野...</div>
+      <div class="loading-track"><div class="loading-bar" id="loadingBar"></div></div>
+    </div>
+  </div>
+
+  <main class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="mark" aria-hidden="true"></div>
+        <div><small>DOTA BLIND SPOT</small><strong>战争迷雾</strong></div>
+      </div>
+      <nav class="nav" aria-label="游戏模式">
+        <button class="nav-item active">每日挑战</button>
+        <button class="nav-item disabled" title="后续开放" disabled>无尽模式</button>
+        <button class="nav-item disabled" title="后续开放" disabled>好友房</button>
+        <span class="version">BETA 0.5</span>
+      </nav>
+    </header>
+
+    <section class="intro">
+      <div>
+        <div class="eyebrow" id="challengeNo">DAILY CHALLENGE · #001</div>
+        <h1>你真的认得<br>这些英雄吗？</h1>
+        <p>每局随机抽取 5 名不同英雄。初始只开放极小视野；每次答错都会扣分、扩大视野，并将侦察点转移到另一个较远的离散位置。</p>
+      </div>
+      <div class="intro-meta">
+        <div class="meta-card"><span>英雄题库</span><strong id="poolSize">—</strong></div>
+        <div class="meta-card"><span>历史最高</span><strong id="bestScore">0</strong></div>
+      </div>
+    </section>
+
+    <section class="round-strip" id="roundStrip" aria-label="关卡进度"></section>
+
+    <section class="hud">
+      <div class="hud-card"><span>题目进度</span><strong id="progress">1 / 5</strong></div>
+      <div class="hud-card"><span>当前得分</span><strong class="gold" id="score">1,000</strong></div>
+      <div class="hud-card"><span>连续答对</span><strong id="streak">0</strong></div>
+      <div class="hud-card" id="timerCard"><span>剩余时间</span><strong class="red" id="timer">45s</strong></div>
+    </section>
+
+    <section class="game">
+      <article class="card">
+        <div class="head">
+          <h2>战争迷雾视野</h2>
+          <div class="head-meta">
+            <span id="visionState">离散侦察点</span>
+            <div class="bars" aria-label="难度"><i class="on"></i><i class="on"></i><i class="on"></i><i></i></div>
