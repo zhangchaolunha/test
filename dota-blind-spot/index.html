@@ -3,162 +3,1017 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#090b0d" />
+  <meta name="theme-color" content="#080a0c" />
+  <meta name="description" content="DOTA2 战争迷雾英雄竞猜小游戏" />
   <title>战争迷雾 · DOTA 英雄竞猜</title>
   <style>
-    :root{
-      --bg:#080a0c;--panel:#121518;--panel2:#191d20;--line:rgba(255,255,255,.09);
-      --text:#f2eee5;--muted:#899196;--red:#cf4936;--gold:#d8b56a;--green:#75b784;
-      --reveal:30px;--fog-x:50%;--fog-y:48%;--shadow:0 28px 90px rgba(0,0,0,.45)
+    :root {
+      --bg: #07090b;
+      --panel: rgba(17, 20, 23, 0.94);
+      --panel-soft: rgba(25, 29, 33, 0.88);
+      --line: rgba(255, 255, 255, 0.09);
+      --line-strong: rgba(255, 255, 255, 0.15);
+      --text: #f1eee7;
+      --muted: #899196;
+      --muted-2: #626a70;
+      --red: #d24b38;
+      --red-dark: #7f2118;
+      --gold: #d8b56a;
+      --green: #78bd88;
+      --blue: #6fa8d7;
+      --shadow: 0 28px 90px rgba(0, 0, 0, 0.5);
+      --reveal: 28px;
+      --fog-x: 50%;
+      --fog-y: 48%;
     }
-    *{box-sizing:border-box}html,body{min-height:100%}
-    body{margin:0;color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;background:radial-gradient(circle at 12% 8%,rgba(151,44,30,.15),transparent 25%),radial-gradient(circle at 88% 82%,rgba(216,181,106,.07),transparent 28%),linear-gradient(180deg,#101215,#080a0c 65%,#060708);overflow-x:hidden}
-    body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.12;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);background-size:44px 44px;mask-image:linear-gradient(to bottom,#000,transparent 82%)}
-    button{font:inherit}.app{width:min(1180px,calc(100% - 28px));margin:auto;padding:14px 0 38px}.topbar{height:66px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}
-    .brand{display:flex;align-items:center;gap:12px}.mark{position:relative;width:40px;height:40px;transform:rotate(45deg);border:1px solid rgba(232,109,73,.48);background:linear-gradient(145deg,#a83224,#48130f);box-shadow:0 10px 30px rgba(168,39,28,.23)}.mark:before,.mark:after{content:"";position:absolute;background:#121416}.mark:before{width:7px;height:29px;left:16px;top:5px;transform:skew(-18deg)}.mark:after{width:28px;height:7px;left:6px;top:16px;transform:skew(-18deg)}
-    .brand small{display:block;color:#b99f72;font-size:9px;letter-spacing:.26em}.brand strong{font:700 22px Georgia,serif;letter-spacing:.05em}.nav{display:flex;gap:8px;align-items:center}.nav span{padding:9px 13px;color:#899095;border-radius:8px}.nav .active{color:#fff;border:1px solid rgba(207,73,54,.42);background:rgba(149,43,31,.14)}.avatar{width:34px;height:34px;display:grid!important;place-items:center;border:1px solid rgba(216,181,106,.4);border-radius:50%;color:var(--gold)!important;padding:0!important}
-    .intro{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:end;padding:30px 0 22px}.eyebrow{color:var(--red);font-size:12px;font-weight:800;letter-spacing:.2em}.intro h1{margin:8px 0 8px;font:700 clamp(38px,5vw,62px)/.98 Georgia,serif;letter-spacing:-.02em}.intro p{margin:0;max-width:760px;color:var(--muted);line-height:1.7;font-size:13px}.daily{min-width:156px;padding:14px 16px;border:1px solid rgba(216,181,106,.22);border-radius:10px;background:rgba(216,181,106,.04)}.daily span{font-size:11px;color:#8d9397}.daily strong{display:block;margin-top:4px;color:var(--gold);font:700 24px Georgia,serif}
-    .hud{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px}.hud>div{padding:12px 15px;min-height:72px;border:1px solid var(--line);border-radius:10px;background:linear-gradient(180deg,rgba(29,33,36,.92),rgba(17,20,22,.9))}.hud span{display:block;color:#80888d;font-size:11px;letter-spacing:.06em}.hud strong{display:block;margin-top:4px;font-size:23px;font-variant-numeric:tabular-nums}.gold{color:var(--gold)}.red{color:#e76552}
-    .game{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(330px,.75fr);gap:14px}.card{overflow:hidden;border:1px solid var(--line);border-radius:14px;background:rgba(18,21,24,.9);box-shadow:var(--shadow)}.head{height:58px;padding:0 17px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);background:rgba(255,255,255,.015)}.head h2{margin:0;font-size:15px}.bars{display:flex;gap:4px}.bars i{width:16px;height:4px;border-radius:4px;background:#34383c}.bars i.on{background:var(--red);box-shadow:0 0 10px rgba(207,73,54,.4)}
-    .stage{position:relative;height:520px;overflow:hidden;isolation:isolate;background:#090b0c;cursor:default}.backdrop,.portrait-frame{position:absolute;left:50%;top:50%;height:100%;aspect-ratio:4/3;max-width:100%;transform:translate(-50%,-50%)}.backdrop{z-index:0;background-repeat:no-repeat;background-position:center;background-size:contain;filter:blur(23px) brightness(.36) saturate(.8);transform:translate(-50%,-50%) scale(1.16)}.portrait-frame{z-index:1}.portrait{width:100%;height:100%;background-repeat:no-repeat;background-position:center;background-size:contain;filter:saturate(.98) contrast(1.05) brightness(1.08)}.shade{position:absolute;inset:0;z-index:2;background:linear-gradient(90deg,rgba(5,7,8,.48),transparent 25%,transparent 75%,rgba(5,7,8,.48)),linear-gradient(180deg,transparent 65%,rgba(5,7,8,.62));pointer-events:none}
-    .fog{position:absolute;inset:0;z-index:3;pointer-events:none;background:radial-gradient(ellipse at 15% 30%,rgba(128,140,144,.17),transparent 34%),radial-gradient(ellipse at 85% 68%,rgba(112,123,128,.14),transparent 31%),rgba(4,6,7,.975);-webkit-mask-image:radial-gradient(circle at var(--fog-x) var(--fog-y),transparent 0,transparent var(--reveal),rgba(0,0,0,.22) calc(var(--reveal) + 9px),rgba(0,0,0,.88) calc(var(--reveal) + 32px),#000 calc(var(--reveal) + 74px));mask-image:radial-gradient(circle at var(--fog-x) var(--fog-y),transparent 0,transparent var(--reveal),rgba(0,0,0,.22) calc(var(--reveal) + 9px),rgba(0,0,0,.88) calc(var(--reveal) + 32px),#000 calc(var(--reveal) + 74px));-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-size:100% 100%;mask-size:100% 100%;will-change:mask-image,-webkit-mask-image}.fog:after{content:"";position:absolute;inset:0;opacity:.25;background:radial-gradient(circle at 20% 50%,rgba(190,199,201,.2),transparent 24%),radial-gradient(circle at 75% 30%,rgba(150,160,164,.16),transparent 28%);filter:blur(28px);animation:drift 12s ease-in-out infinite alternate}@keyframes drift{to{transform:translate(5%,-3%) scale(1.15)}}
-    .scope{position:absolute;z-index:4;left:var(--fog-x);top:var(--fog-y);width:calc(var(--reveal)*2 + 12px);height:calc(var(--reveal)*2 + 12px);transform:translate(-50%,-50%);border:1px solid rgba(216,181,106,.3);border-radius:50%;box-shadow:inset 0 0 20px rgba(216,181,106,.06);pointer-events:none;transition:left .32s ease,top .32s ease,width .32s ease,height .32s ease}.scope:before,.scope:after{content:"";position:absolute;background:rgba(216,181,106,.24)}.scope:before{width:1px;height:20px;left:50%;top:-10px}.scope:after{height:1px;width:20px;top:50%;left:-10px}
-    .visible{position:absolute;z-index:5;left:16px;bottom:15px;display:flex;gap:10px;align-items:center;font-size:11px;color:#c4c8ca}.visible b{font-size:22px;color:var(--gold)}.foot{min-height:54px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--line);color:#80878b;font-size:12px}.dots{display:flex;gap:7px}.dots i{width:9px;height:9px;border:1px solid #555d61;border-radius:50%}.dots i.used{border-color:var(--red);background:var(--red);box-shadow:0 0 9px rgba(207,73,54,.42)}
-    .answer{padding:16px}.type{color:#d1b77d;font-size:11px;font-weight:700;letter-spacing:.08em}.prompt{margin:10px 0 14px;font:20px/1.45 Georgia,serif}.options{display:grid;gap:8px}.option{min-height:48px;width:100%;padding:0 13px;display:flex;align-items:center;justify-content:space-between;color:#d8dcde;text-align:left;border:1px solid rgba(255,255,255,.08);border-radius:9px;background:linear-gradient(180deg,rgba(255,255,255,.025),rgba(255,255,255,.01));cursor:pointer;transition:.18s}.option:hover{transform:translateY(-1px);border-color:rgba(216,181,106,.42);background:rgba(216,181,106,.06)}.option.wrong{color:#ed9487;border-color:rgba(207,73,54,.6);background:rgba(207,73,54,.1)}.option.correct{color:#a8dfb3;border-color:rgba(117,183,132,.7);background:rgba(117,183,132,.12)}.option kbd{width:25px;height:25px;display:grid;place-items:center;color:#747b7f;border:1px solid rgba(255,255,255,.09);border-radius:6px;background:rgba(0,0,0,.18);font-size:10px}.hint{min-height:58px;margin-top:12px;padding:11px 12px;color:#999fa2;border:1px dashed rgba(216,181,106,.22);border-radius:9px;background:rgba(216,181,106,.035);font-size:12px;line-height:1.55}.hint b{color:#d7c18f}.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.btn{min-height:44px;color:#c8ccce;border:1px solid rgba(255,255,255,.09);border-radius:8px;background:#191d20;cursor:pointer}.btn.primary{color:#fff;border-color:rgba(207,73,54,.46);background:linear-gradient(180deg,#ae3527,#762017)}.btn:disabled{opacity:.45;cursor:default}
-    .toast{position:fixed;z-index:50;left:50%;bottom:26px;padding:12px 16px;transform:translate(-50%,18px);opacity:0;color:#eee;border:1px solid var(--line);border-radius:10px;background:rgba(18,21,24,.97);box-shadow:var(--shadow);transition:.22s;pointer-events:none;font-size:13px}.toast.show{opacity:1;transform:translate(-50%,0)}.modal{position:fixed;z-index:60;inset:0;padding:18px;display:grid;place-items:center;opacity:0;pointer-events:none;background:rgba(2,3,4,.78);backdrop-filter:blur(8px);transition:.22s}.modal.show{opacity:1;pointer-events:auto}.result{width:min(540px,100%);overflow:hidden;border:1px solid rgba(216,181,106,.25);border-radius:16px;background:linear-gradient(180deg,#202428,#101315);box-shadow:0 40px 120px rgba(0,0,0,.66)}.result-img{height:300px;width:100%;background-color:#080a0b;background-repeat:no-repeat;background-position:center;background-size:contain}.result-body{padding:20px;text-align:center}.kicker{color:var(--green);font-size:11px;letter-spacing:.16em}.result h3{margin:7px 0 6px;font:700 34px Georgia,serif}.result p{margin:0 auto 16px;max-width:430px;color:#99a0a4;font-size:13px;line-height:1.7}.stats{display:grid;grid-template-columns:repeat(3,1fr);margin-bottom:14px;border:1px solid var(--line);border-radius:10px;overflow:hidden}.stats div{padding:10px 5px;border-right:1px solid var(--line)}.stats div:last-child{border:0}.stats span{display:block;color:#777e82;font-size:10px}.stats strong{display:block;margin-top:3px;font-size:18px}.end{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;max-width:330px;margin:14px auto 18px}.end span{height:42px;display:grid;place-items:center;border:1px solid rgba(117,183,132,.28);border-radius:8px;background:rgba(117,183,132,.12);color:#9dd3a7;font-weight:800}.legal{text-align:center;padding:17px 0 0;color:#5d6468;font-size:10px}
-    @media(max-width:860px){.nav span:not(.active),.avatar{display:none!important}.intro{grid-template-columns:1fr}.daily{width:max-content}.hud{grid-template-columns:repeat(2,1fr)}.game{grid-template-columns:1fr}.stage{height:470px}}@media(max-width:520px){.app{width:calc(100% - 18px)}.intro h1{font-size:41px}.stage{height:390px}.foot{align-items:flex-start;flex-direction:column}.answer{padding:13px}}
+
+    * { box-sizing: border-box; }
+    html { min-height: 100%; background: var(--bg); }
+    body {
+      min-height: 100%;
+      margin: 0;
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", "Microsoft YaHei", sans-serif;
+      background:
+        radial-gradient(circle at 10% 6%, rgba(159, 43, 29, 0.17), transparent 26%),
+        radial-gradient(circle at 88% 78%, rgba(216, 181, 106, 0.08), transparent 28%),
+        linear-gradient(180deg, #101216 0%, #080a0c 62%, #050607 100%);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      opacity: 0.12;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.022) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.016) 1px, transparent 1px);
+      background-size: 44px 44px;
+      mask-image: linear-gradient(to bottom, #000, transparent 85%);
+    }
+
+    button { font: inherit; }
+    button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+    .loading {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: grid;
+      place-items: center;
+      background: #07090b;
+      transition: opacity 0.35s ease, visibility 0.35s ease;
+    }
+    .loading.hidden { opacity: 0; visibility: hidden; }
+    .loading-box { width: min(360px, calc(100% - 48px)); text-align: center; }
+    .loading-mark {
+      width: 54px;
+      height: 54px;
+      margin: 0 auto 22px;
+      transform: rotate(45deg);
+      border: 1px solid rgba(232, 109, 73, 0.5);
+      background: linear-gradient(145deg, #a83224, #48130f 72%);
+      box-shadow: 0 16px 44px rgba(168, 39, 28, 0.28);
+      animation: loadingPulse 1.4s ease-in-out infinite alternate;
+    }
+    @keyframes loadingPulse { to { transform: rotate(45deg) scale(1.08); filter: brightness(1.25); } }
+    .loading-title { font: 700 24px Georgia, serif; letter-spacing: 0.08em; }
+    .loading-copy { margin: 8px 0 16px; color: var(--muted); font-size: 12px; }
+    .loading-track { height: 4px; overflow: hidden; border-radius: 9px; background: #202429; }
+    .loading-bar { height: 100%; width: 14%; border-radius: inherit; background: linear-gradient(90deg, var(--red-dark), var(--red)); transition: width 0.25s ease; }
+
+    .app { width: min(1220px, calc(100% - 28px)); margin: 0 auto; padding: 14px 0 40px; }
+
+    .topbar {
+      min-height: 66px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      border-bottom: 1px solid var(--line);
+    }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .mark {
+      position: relative;
+      width: 40px;
+      height: 40px;
+      transform: rotate(45deg);
+      border: 1px solid rgba(232, 109, 73, 0.48);
+      background: linear-gradient(145deg, #a83224, #48130f);
+      box-shadow: 0 10px 30px rgba(168, 39, 28, 0.23);
+    }
+    .mark::before, .mark::after { content: ""; position: absolute; background: #121416; }
+    .mark::before { width: 7px; height: 29px; left: 16px; top: 5px; transform: skew(-18deg); }
+    .mark::after { width: 28px; height: 7px; left: 6px; top: 16px; transform: skew(-18deg); }
+    .brand small { display: block; color: #b99f72; font-size: 9px; letter-spacing: 0.26em; }
+    .brand strong { font: 700 22px Georgia, serif; letter-spacing: 0.05em; }
+
+    .nav { display: flex; align-items: center; gap: 7px; }
+    .nav-item {
+      padding: 9px 13px;
+      color: #899095;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      background: transparent;
+      font-size: 13px;
+    }
+    .nav-item.active { color: #fff; border-color: rgba(207, 73, 54, 0.42); background: rgba(149, 43, 31, 0.14); }
+    .nav-item.disabled { cursor: not-allowed; opacity: 0.58; }
+    .version { color: var(--gold); border: 1px solid rgba(216, 181, 106, 0.3); border-radius: 999px; padding: 6px 9px; font-size: 10px; }
+
+    .intro {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 28px;
+      align-items: end;
+      padding: 30px 0 20px;
+    }
+    .eyebrow { color: var(--red); font-size: 12px; font-weight: 800; letter-spacing: 0.2em; }
+    .intro h1 { margin: 8px 0 9px; font: 700 clamp(40px, 5vw, 66px) / 0.96 Georgia, serif; letter-spacing: -0.025em; }
+    .intro p { max-width: 780px; margin: 0; color: var(--muted); line-height: 1.75; font-size: 13px; }
+    .intro-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; min-width: 286px; }
+    .meta-card {
+      padding: 13px 15px;
+      border: 1px solid rgba(216, 181, 106, 0.18);
+      border-radius: 11px;
+      background: rgba(216, 181, 106, 0.035);
+    }
+    .meta-card span { display: block; color: #81888d; font-size: 10px; }
+    .meta-card strong { display: block; margin-top: 5px; color: var(--gold); font: 700 21px Georgia, serif; }
+
+    .round-strip {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .round-node {
+      position: relative;
+      min-height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(17, 20, 23, 0.74);
+      color: var(--muted-2);
+      font-size: 11px;
+    }
+    .round-node::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #3b4146; }
+    .round-node.current { color: #fff; border-color: rgba(216, 181, 106, 0.38); background: rgba(216, 181, 106, 0.07); }
+    .round-node.current::before { background: var(--gold); box-shadow: 0 0 12px rgba(216, 181, 106, 0.5); }
+    .round-node.success { color: #9fd7aa; border-color: rgba(120, 189, 136, 0.3); }
+    .round-node.success::before { background: var(--green); }
+    .round-node.failed { color: #d78074; border-color: rgba(210, 75, 56, 0.25); }
+    .round-node.failed::before { background: var(--red); }
+
+    .hud { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 12px; }
+    .hud-card {
+      position: relative;
+      min-height: 76px;
+      padding: 12px 15px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      background: linear-gradient(180deg, rgba(29, 33, 36, 0.94), rgba(17, 20, 22, 0.92));
+    }
+    .hud-card::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: transparent; }
+    .hud-card.alert::after { background: var(--red); animation: timePulse 0.8s ease-in-out infinite alternate; }
+    @keyframes timePulse { to { opacity: 0.3; } }
+    .hud-card span { display: block; color: #80888d; font-size: 11px; letter-spacing: 0.06em; }
+    .hud-card strong { display: block; margin-top: 5px; font-size: 23px; font-variant-numeric: tabular-nums; }
+    .gold { color: var(--gold); }
+    .red { color: #e76552; }
+
+    .game { display: grid; grid-template-columns: minmax(0, 1.58fr) minmax(340px, 0.72fr); gap: 14px; align-items: stretch; }
+    .card { overflow: hidden; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); box-shadow: var(--shadow); }
+    .head {
+      min-height: 58px;
+      padding: 0 17px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.016);
+    }
+    .head h2 { margin: 0; font-size: 15px; }
+    .head-meta { display: flex; align-items: center; gap: 10px; color: var(--muted-2); font-size: 11px; }
+    .bars { display: flex; gap: 4px; }
+    .bars i { width: 16px; height: 4px; border-radius: 4px; background: #34383c; }
+    .bars i.on { background: var(--red); box-shadow: 0 0 10px rgba(207, 73, 54, 0.4); }
+
+    .stage {
+      position: relative;
+      height: 535px;
+      overflow: hidden;
+      isolation: isolate;
+      background: #080a0b;
+      cursor: default;
+    }
+    .backdrop, .portrait-frame {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 100%;
+      height: 100%;
+      transform: translate(-50%, -50%);
+    }
+    .backdrop {
+      z-index: 0;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: cover;
+      filter: blur(25px) brightness(0.34) saturate(0.86);
+      transform: translate(-50%, -50%) scale(1.15);
+    }
+    .portrait-frame { z-index: 1; }
+    .portrait {
+      width: 100%;
+      height: 100%;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+      filter: saturate(1.02) contrast(1.05) brightness(1.07);
+      transition: transform 0.5s ease, filter 0.35s ease;
+    }
+    .stage.success .portrait { transform: scale(1.025); filter: saturate(1.12) contrast(1.08) brightness(1.13); }
+    .shade { position: absolute; inset: 0; z-index: 2; pointer-events: none; background: linear-gradient(90deg, rgba(5, 7, 8, 0.52), transparent 22%, transparent 78%, rgba(5, 7, 8, 0.52)), linear-gradient(180deg, rgba(5, 7, 8, 0.18), transparent 32%, transparent 64%, rgba(5, 7, 8, 0.7)); }
+    .scanlines { position: absolute; inset: 0; z-index: 2; opacity: 0.075; pointer-events: none; background: repeating-linear-gradient(180deg, rgba(255,255,255,0.08) 0 1px, transparent 1px 4px); }
+
+    .fog {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse at 15% 30%, rgba(128, 140, 144, 0.17), transparent 34%),
+        radial-gradient(ellipse at 85% 68%, rgba(112, 123, 128, 0.14), transparent 31%),
+        rgba(4, 6, 7, 0.978);
+      -webkit-mask-image: radial-gradient(circle at var(--fog-x) var(--fog-y), transparent 0, transparent var(--reveal), rgba(0,0,0,.22) calc(var(--reveal) + 8px), rgba(0,0,0,.9) calc(var(--reveal) + 29px), #000 calc(var(--reveal) + 68px));
+      mask-image: radial-gradient(circle at var(--fog-x) var(--fog-y), transparent 0, transparent var(--reveal), rgba(0,0,0,.22) calc(var(--reveal) + 8px), rgba(0,0,0,.9) calc(var(--reveal) + 29px), #000 calc(var(--reveal) + 68px));
+      -webkit-mask-repeat: no-repeat;
+      mask-repeat: no-repeat;
+      -webkit-mask-size: 100% 100%;
+      mask-size: 100% 100%;
+      will-change: mask-image, -webkit-mask-image;
+    }
+    .fog::after { content: ""; position: absolute; inset: 0; opacity: 0.25; background: radial-gradient(circle at 20% 50%, rgba(190, 199, 201, 0.2), transparent 24%), radial-gradient(circle at 75% 30%, rgba(150, 160, 164, 0.16), transparent 28%); filter: blur(28px); animation: drift 12s ease-in-out infinite alternate; }
+    @keyframes drift { to { transform: translate(5%, -3%) scale(1.15); } }
+
+    .scope {
+      position: absolute;
+      z-index: 4;
+      left: var(--fog-x);
+      top: var(--fog-y);
+      width: calc(var(--reveal) * 2 + 12px);
+      height: calc(var(--reveal) * 2 + 12px);
+      transform: translate(-50%, -50%);
+      border: 1px solid rgba(216, 181, 106, 0.32);
+      border-radius: 50%;
+      box-shadow: inset 0 0 20px rgba(216, 181, 106, 0.06), 0 0 28px rgba(0, 0, 0, 0.46);
+      pointer-events: none;
+      transition: left 0.38s cubic-bezier(.2,.8,.2,1), top 0.38s cubic-bezier(.2,.8,.2,1), width 0.34s ease, height 0.34s ease;
+    }
+    .scope::before, .scope::after { content: ""; position: absolute; background: rgba(216, 181, 106, 0.25); }
+    .scope::before { width: 1px; height: 20px; left: 50%; top: -10px; }
+    .scope::after { height: 1px; width: 20px; top: 50%; left: -10px; }
+    .scope.moving { animation: scopeFlash 0.45s ease; }
+    @keyframes scopeFlash { 50% { border-color: rgba(216,181,106,.9); box-shadow: 0 0 42px rgba(216,181,106,.3); } }
+
+    .stage-status {
+      position: absolute;
+      z-index: 5;
+      left: 16px;
+      bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 9px;
+      border: 1px solid rgba(255,255,255,.06);
+      border-radius: 8px;
+      background: rgba(7, 9, 10, 0.46);
+      backdrop-filter: blur(7px);
+      color: #c4c8ca;
+      font-size: 11px;
+    }
+    .stage-status b { color: var(--gold); font-size: 21px; }
+    .float-score {
+      position: absolute;
+      z-index: 6;
+      right: 18px;
+      bottom: 18px;
+      opacity: 0;
+      color: #ef7d6e;
+      font-weight: 800;
+      font-size: 18px;
+      text-shadow: 0 5px 18px rgba(0,0,0,.7);
+      pointer-events: none;
+    }
+    .float-score.show { animation: floatPenalty 0.85s ease; }
+    .float-score.bonus { color: #99dca7; }
+    @keyframes floatPenalty { 0% { opacity: 0; transform: translateY(8px); } 25% { opacity: 1; } 100% { opacity: 0; transform: translateY(-34px); } }
+
+    .foot {
+      min-height: 56px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border-top: 1px solid var(--line);
+      color: #80878b;
+      font-size: 12px;
+    }
+    .dots { display: flex; gap: 7px; }
+    .dots i { width: 9px; height: 9px; border: 1px solid #555d61; border-radius: 50%; }
+    .dots i.used { border-color: var(--red); background: var(--red); box-shadow: 0 0 9px rgba(207, 73, 54, 0.42); }
+
+    .answer { padding: 16px; }
+    .type { display: flex; align-items: center; gap: 7px; color: #d1b77d; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; }
+    .type::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 12px rgba(216,181,106,.5); }
+    .prompt { margin: 10px 0 14px; font: 20px / 1.45 Georgia, serif; }
+    .options { display: grid; gap: 8px; }
+    .option {
+      min-height: 49px;
+      width: 100%;
+      padding: 0 13px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #d8dcde;
+      text-align: left;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 9px;
+      background: linear-gradient(180deg, rgba(255,255,255,.025), rgba(255,255,255,.01));
+      cursor: pointer;
+      transition: transform .18s ease, border-color .18s ease, background .18s ease, opacity .18s ease;
+    }
+    .option:hover:not(:disabled) { transform: translateY(-1px); border-color: rgba(216, 181, 106, 0.42); background: rgba(216, 181, 106, 0.06); }
+    .option:disabled { cursor: default; }
+    .option.wrong { color: #ed9487; border-color: rgba(207, 73, 54, 0.62); background: rgba(207, 73, 54, 0.1); animation: shake .28s linear; }
+    .option.correct { color: #a8dfb3; border-color: rgba(117, 183, 132, 0.72); background: rgba(117, 183, 132, 0.13); }
+    .option.dimmed { opacity: 0.38; }
+    @keyframes shake { 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+    .option kbd { width: 25px; height: 25px; display: grid; place-items: center; color: #747b7f; border: 1px solid rgba(255,255,255,.09); border-radius: 6px; background: rgba(0,0,0,.18); font-size: 10px; }
+
+    .hint {
+      min-height: 60px;
+      margin-top: 12px;
+      padding: 11px 12px;
+      color: #999fa2;
+      border: 1px dashed rgba(216, 181, 106, 0.22);
+      border-radius: 9px;
+      background: rgba(216, 181, 106, 0.035);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+    .hint b { color: #d7c18f; }
+    .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+    .btn {
+      min-height: 44px;
+      color: #c8ccce;
+      border: 1px solid rgba(255,255,255,.09);
+      border-radius: 8px;
+      background: #191d20;
+      cursor: pointer;
+      transition: transform .18s ease, filter .18s ease, border-color .18s ease;
+    }
+    .btn:hover:not(:disabled) { transform: translateY(-1px); border-color: rgba(255,255,255,.2); filter: brightness(1.08); }
+    .btn.primary { color: #fff; border-color: rgba(207,73,54,.46); background: linear-gradient(180deg, #ae3527, #762017); }
+    .btn.gold-btn { color: #17130b; border-color: rgba(216,181,106,.65); background: linear-gradient(180deg, #e2c67f, #b99345); font-weight: 800; }
+    .btn:disabled { opacity: 0.45; cursor: default; }
+
+    .toast {
+      position: fixed;
+      z-index: 70;
+      left: 50%;
+      bottom: 26px;
+      max-width: calc(100% - 32px);
+      padding: 12px 16px;
+      transform: translate(-50%, 18px);
+      opacity: 0;
+      color: #eee;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: rgba(18, 21, 24, 0.97);
+      box-shadow: var(--shadow);
+      transition: 0.22s ease;
+      pointer-events: none;
+      font-size: 13px;
+      text-align: center;
+    }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+    .modal {
+      position: fixed;
+      z-index: 60;
+      inset: 0;
+      padding: 18px;
+      display: grid;
+      place-items: center;
+      opacity: 0;
+      pointer-events: none;
+      background: rgba(2, 3, 4, 0.8);
+      backdrop-filter: blur(9px);
+      transition: 0.22s ease;
+    }
+    .modal.show { opacity: 1; pointer-events: auto; }
+    .result {
+      width: min(570px, 100%);
+      overflow: hidden;
+      border: 1px solid rgba(216, 181, 106, 0.25);
+      border-radius: 16px;
+      background: linear-gradient(180deg, #202428, #101315);
+      box-shadow: 0 40px 120px rgba(0,0,0,.68);
+      transform: translateY(14px) scale(.985);
+      transition: transform .24s ease;
+    }
+    .modal.show .result { transform: translateY(0) scale(1); }
+    .result-img { position: relative; height: 300px; width: 100%; background-color: #080a0b; background-repeat: no-repeat; background-position: center; background-size: contain; }
+    .result-img::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 56%, rgba(16,19,21,.92)); pointer-events: none; }
+    .result-body { padding: 20px; text-align: center; }
+    .kicker { color: var(--green); font-size: 11px; letter-spacing: .16em; }
+    .result h3 { margin: 7px 0 6px; font: 700 34px Georgia, serif; }
+    .result p { margin: 0 auto 16px; max-width: 460px; color: #99a0a4; font-size: 13px; line-height: 1.7; }
+    .stats { display: grid; grid-template-columns: repeat(3, 1fr); margin-bottom: 14px; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+    .stats div { padding: 10px 5px; border-right: 1px solid var(--line); }
+    .stats div:last-child { border: 0; }
+    .stats span { display: block; color: #777e82; font-size: 10px; }
+    .stats strong { display: block; margin-top: 3px; font-size: 18px; }
+    .end { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; max-width: 350px; margin: 14px auto 18px; }
+    .end span { min-height: 47px; display: grid; place-items: center; border: 1px solid rgba(117,183,132,.28); border-radius: 8px; background: rgba(117,183,132,.12); color: #9dd3a7; font-size: 12px; font-weight: 800; }
+    .end span.fail { color: #e28b7e; border-color: rgba(210,75,56,.28); background: rgba(210,75,56,.1); }
+    .result-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+    .legal { padding: 18px 0 0; color: #5d6468; font-size: 10px; text-align: center; }
+
+    @media (max-width: 900px) {
+      .nav-item:not(.active), .version { display: none; }
+      .intro { grid-template-columns: 1fr; gap: 14px; }
+      .intro-meta { width: min(100%, 360px); min-width: 0; }
+      .hud { grid-template-columns: repeat(2, 1fr); }
+      .game { grid-template-columns: 1fr; }
+      .stage { height: 480px; }
+    }
+
+    @media (max-width: 560px) {
+      .app { width: calc(100% - 18px); padding-top: 8px; }
+      .topbar { min-height: 58px; }
+      .mark { width: 34px; height: 34px; }
+      .mark::before { left: 13px; top: 3px; height: 28px; }
+      .mark::after { left: 3px; top: 13px; width: 28px; }
+      .brand strong { font-size: 18px; }
+      .intro { padding-top: 24px; }
+      .intro h1 { font-size: 42px; }
+      .round-node { min-height: 31px; font-size: 0; }
+      .round-node::before { width: 9px; height: 9px; }
+      .stage { height: 390px; }
+      .foot { flex-direction: column; align-items: flex-start; }
+      .answer { padding: 13px; }
+      .result-img { height: 235px; }
+      .result-actions { grid-template-columns: 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
   </style>
 </head>
 <body>
+  <div class="loading" id="loading">
+    <div class="loading-box">
+      <div class="loading-mark"></div>
+      <div class="loading-title">战争迷雾</div>
+      <div class="loading-copy" id="loadingCopy">正在校准真视视野...</div>
+      <div class="loading-track"><div class="loading-bar" id="loadingBar"></div></div>
+    </div>
+  </div>
+
   <main class="app">
     <header class="topbar">
-      <div class="brand"><div class="mark"></div><div><small>DOTA BLIND SPOT</small><strong>战争迷雾</strong></div></div>
-      <nav class="nav"><span class="active">每日挑战</span><span>无尽模式</span><span>好友房</span><span class="avatar">先</span></nav>
+      <div class="brand">
+        <div class="mark" aria-hidden="true"></div>
+        <div><small>DOTA BLIND SPOT</small><strong>战争迷雾</strong></div>
+      </div>
+      <nav class="nav" aria-label="游戏模式">
+        <button class="nav-item active">每日挑战</button>
+        <button class="nav-item disabled" title="后续开放" disabled>无尽模式</button>
+        <button class="nav-item disabled" title="后续开放" disabled>好友房</button>
+        <span class="version">BETA 0.5</span>
+      </nav>
     </header>
+
     <section class="intro">
-      <div><div class="eyebrow">DAILY CHALLENGE · #004</div><h1>你真的认得<br>这些英雄吗？</h1><p>每次从英雄池随机抽取 5 名英雄，本局内不会重复。视野只会出现在一组分散的离散点位中；每次答错都会扩大视野，并自动跳转到另一个距离更远的点位，玩家不能手动修改。</p></div>
-      <div class="daily"><span>本期英雄池</span><strong id="poolSize">30</strong></div>
+      <div>
+        <div class="eyebrow" id="challengeNo">DAILY CHALLENGE · #001</div>
+        <h1>你真的认得<br>这些英雄吗？</h1>
+        <p>每局随机抽取 5 名不同英雄。初始只开放极小视野；每次答错都会扣分、扩大视野，并将侦察点转移到另一个较远的离散位置。</p>
+      </div>
+      <div class="intro-meta">
+        <div class="meta-card"><span>英雄题库</span><strong id="poolSize">—</strong></div>
+        <div class="meta-card"><span>历史最高</span><strong id="bestScore">0</strong></div>
+      </div>
     </section>
-    <section class="hud"><div><span>题目进度</span><strong id="progress">1 / 5</strong></div><div><span>当前得分</span><strong class="gold" id="score">1,000</strong></div><div><span>连续答对</span><strong id="streak">0</strong></div><div><span>剩余时间</span><strong class="red" id="timer">45s</strong></div></section>
+
+    <section class="round-strip" id="roundStrip" aria-label="关卡进度"></section>
+
+    <section class="hud">
+      <div class="hud-card"><span>题目进度</span><strong id="progress">1 / 5</strong></div>
+      <div class="hud-card"><span>当前得分</span><strong class="gold" id="score">1,000</strong></div>
+      <div class="hud-card"><span>连续答对</span><strong id="streak">0</strong></div>
+      <div class="hud-card" id="timerCard"><span>剩余时间</span><strong class="red" id="timer">45s</strong></div>
+    </section>
+
     <section class="game">
-      <article class="card"><div class="head"><h2>战争迷雾视野</h2><div class="bars"><i class="on"></i><i class="on"></i><i class="on"></i><i></i></div></div>
-        <div class="stage" id="stage"><div class="backdrop" id="backdrop"></div><div class="portrait-frame"><div class="portrait" id="portrait"></div></div><div class="shade"></div><div class="fog"></div><div class="scope"></div><div class="visible"><b id="visible">02%</b><span>当前可见视野<br>点位仅由系统自动切换</span></div></div>
-        <div class="foot"><span>猜错一次，视野扩大并切换到另一处迷雾点位</span><div class="dots" id="dots"></div></div>
+      <article class="card">
+        <div class="head">
+          <h2>战争迷雾视野</h2>
+          <div class="head-meta">
+            <span id="visionState">离散侦察点</span>
+            <div class="bars" aria-label="难度"><i class="on"></i><i class="on"></i><i class="on"></i><i></i></div>
+          </div>
+        </div>
+        <div class="stage" id="stage">
+          <div class="backdrop" id="backdrop"></div>
+          <div class="portrait-frame"><div class="portrait" id="portrait"></div></div>
+          <div class="shade"></div>
+          <div class="scanlines"></div>
+          <div class="fog"></div>
+          <div class="scope" id="scope"></div>
+          <div class="stage-status"><b id="visible">02%</b><span>当前可见范围<br><span id="positionTip">侦察位置已锁定</span></span></div>
+          <div class="float-score" id="floatScore">−150</div>
+        </div>
+        <div class="foot">
+          <span id="footTip">猜错一次，扩大视野并切换到另一处侦察点</span>
+          <div class="dots" id="dots" aria-label="错误次数"></div>
+        </div>
       </article>
-      <aside class="card"><div class="head"><h2>作出判断</h2><span id="attemptLabel" style="color:#747b7f;font-size:11px">第 1 次猜测</span></div><div class="answer"><div class="type">● 英雄辨识</div><div class="prompt">迷雾中是哪一位英雄？</div><div class="options" id="options"></div><div class="hint" id="hint"><b>先知提示：</b>暂未使用真视。越早答对，分数越高。</div><div class="actions"><button class="btn" id="hintBtn">使用真视 −120</button><button class="btn primary" id="skipBtn">放弃并揭晓</button></div></div></aside>
+
+      <aside class="card">
+        <div class="head">
+          <h2>作出判断</h2>
+          <span id="attemptLabel" style="color:#747b7f;font-size:11px">第 1 次猜测</span>
+        </div>
+        <div class="answer">
+          <div class="type">英雄辨识</div>
+          <div class="prompt">迷雾中是哪一位英雄？</div>
+          <div class="options" id="options"></div>
+          <div class="hint" id="hint"><b>先知提示：</b>暂未使用真视。越早答对，分数越高。</div>
+          <div class="actions">
+            <button class="btn" id="hintBtn">使用真视 −120</button>
+            <button class="btn primary" id="skipBtn">放弃并揭晓</button>
+          </div>
+        </div>
+      </aside>
     </section>
+
     <div class="legal">非官方玩法概念 Demo。Dota、Dota 2 及相关商标归 Valve Corporation 所有。</div>
   </main>
+
   <div class="toast" id="toast"></div>
-  <div class="modal" id="modal"><div class="result"><div class="result-img" id="resultImg"></div><div class="result-body" id="resultBody"></div></div></div>
+  <div class="modal" id="modal" aria-hidden="true">
+    <div class="result">
+      <div class="result-img" id="resultImg"></div>
+      <div class="result-body" id="resultBody"></div>
+    </div>
+  </div>
+
   <script>
-    const GAME_SIZE=5;
-    const SPRITE_COLS=5,SPRITE_ROWS=4;
-    const REVEAL=[30,46,70,104,150,560];
-    const VISIBLE=['02%','05%','11%','22%','40%','100%'];
-    const FOG_POINTS=[
-      {x:18,y:19},{x:50,y:17},{x:82,y:19},
-      {x:21,y:48},{x:50,y:47},{x:79,y:48},
-      {x:18,y:77},{x:50,y:79},{x:82,y:77},
-      {x:34,y:31},{x:66,y:31},{x:34,y:66},{x:66,y:66}
+    const GAME_SIZE = 5;
+    const ROUND_TIME = 45;
+    const REVEAL = [28, 44, 68, 100, 146, 620];
+    const VISIBLE = ['02%', '05%', '11%', '22%', '40%', '100%'];
+    const FOG_POINTS = [
+      { x: 17, y: 18 }, { x: 50, y: 16 }, { x: 83, y: 18 },
+      { x: 19, y: 48 }, { x: 50, y: 47 }, { x: 81, y: 48 },
+      { x: 17, y: 79 }, { x: 50, y: 81 }, { x: 83, y: 79 },
+      { x: 34, y: 31 }, { x: 66, y: 31 }, { x: 34, y: 67 }, { x: 66, y: 67 }
     ];
-    let pool=[],rounds=[],round=0,attempt=0,currentScore=1000,totalScore=0,streak=0,seconds=45,timer=null,hintUsed=false,answered=false,results=[],spriteUrl='',currentFogPoint=null;
-    const $=id=>document.getElementById(id),root=document.documentElement;
-    const shuffle=list=>{const a=[...list];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
-    function pickUniqueNames(list,count,excludedName=''){
-      const seen=new Set(excludedName?[excludedName]:[]),out=[];
-      for(const item of shuffle(list)){
-        if(seen.has(item.name))continue;
-        seen.add(item.name);out.push(item);
-        if(out.length===count)break;
+
+    let pool = [];
+    let rounds = [];
+    let round = 0;
+    let attempt = 0;
+    let currentScore = 1000;
+    let totalScore = 0;
+    let streak = 0;
+    let seconds = ROUND_TIME;
+    let timer = null;
+    let hintUsed = false;
+    let answered = false;
+    let results = [];
+    let currentFogPoint = null;
+
+    const $ = (id) => document.getElementById(id);
+    const root = document.documentElement;
+
+    const shuffle = (list) => {
+      const copy = [...list];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
       }
-      return out;
+      return copy;
+    };
+
+    function dailyNumber() {
+      const start = new Date('2026-08-01T00:00:00+08:00');
+      const now = new Date();
+      return Math.max(1, Math.floor((now - start) / 86400000) + 1);
     }
-    function pickFogPoint(previous=null){
-      const candidates=previous
-        ?FOG_POINTS.filter(point=>Math.hypot(point.x-previous.x,point.y-previous.y)>=38)
-        :FOG_POINTS;
-      const source=candidates.length?candidates:FOG_POINTS.filter(point=>point!==previous);
-      return source[Math.floor(Math.random()*source.length)];
+
+    function pickUniqueNames(list, count, excludedName = '') {
+      const seen = new Set(excludedName ? [excludedName] : []);
+      const output = [];
+      for (const item of shuffle(list)) {
+        if (!item || !item.name || !item.image || seen.has(item.name)) continue;
+        seen.add(item.name);
+        output.push(item);
+        if (output.length === count) break;
+      }
+      return output;
     }
-    function setFogPoint(point){
-      currentFogPoint=point;
-      root.style.setProperty('--fog-x',point.x+'%');
-      root.style.setProperty('--fog-y',point.y+'%');
+
+    function pickFogPoint(previous = null) {
+      const candidates = previous
+        ? FOG_POINTS.filter((point) => Math.hypot(point.x - previous.x, point.y - previous.y) >= 40)
+        : FOG_POINTS;
+      const source = candidates.length ? candidates : FOG_POINTS.filter((point) => point !== previous);
+      return source[Math.floor(Math.random() * source.length)];
     }
-    function moveFogPoint(){setFogPoint(pickFogPoint(currentFogPoint))}
-    function applyVisual(el,q){
-      if(Number.isInteger(q.spriteIndex)){
-        const col=q.spriteIndex%SPRITE_COLS,row=Math.floor(q.spriteIndex/SPRITE_COLS);
-        el.style.backgroundImage=`url("${spriteUrl}")`;
-        el.style.backgroundSize=`${SPRITE_COLS*100}% ${SPRITE_ROWS*100}%`;
-        el.style.backgroundPosition=`${col/(SPRITE_COLS-1)*100}% ${row/(SPRITE_ROWS-1)*100}%`;
-      }else{
-        el.style.backgroundImage=`url("${q.image}")`;
-        el.style.backgroundSize='contain';
-        el.style.backgroundPosition='center';
+
+    function setFogPoint(point, animate = false) {
+      currentFogPoint = point;
+      root.style.setProperty('--fog-x', point.x + '%');
+      root.style.setProperty('--fog-y', point.y + '%');
+      if (animate) {
+        $('scope').classList.remove('moving');
+        void $('scope').offsetWidth;
+        $('scope').classList.add('moving');
+        setTimeout(() => $('scope').classList.remove('moving'), 500);
       }
     }
-    async function boot(){
-      try{
-        const v=Date.now();
-        const manifestRes=await fetch('./assets/heroes.json?v='+v);
-        const spriteResponses=await Promise.all(
-          Array.from({length:6},(_,i)=>fetch(`./assets/heroes-batch-02.part${i+1}.b64?v=${v}`))
-        );
-        if(!manifestRes.ok||spriteResponses.some(res=>!res.ok))throw new Error('assets');
-        pool=await manifestRes.json();
-        const spriteParts=await Promise.all(spriteResponses.map(res=>res.text()));
-        spriteUrl='data:image/webp;base64,'+spriteParts.map(part=>part.trim()).join('');
-        if(pool.length<GAME_SIZE)throw new Error('pool');
-        $('poolSize').textContent=pool.length;
-        startSession();
-      }catch(e){
-        $('hint').innerHTML='<b>资源加载失败：</b>请强制刷新页面，或确认英雄清单与图集资源已部署。';
-        $('hintBtn').disabled=true;$('skipBtn').disabled=true;console.error(e);
+
+    function moveFogPoint() {
+      setFogPoint(pickFogPoint(currentFogPoint), true);
+      $('positionTip').textContent = '侦察点已转移';
+      setTimeout(() => { if (!answered) $('positionTip').textContent = '侦察位置已锁定'; }, 850);
+    }
+
+    function applyVisual(element, question) {
+      element.style.backgroundImage = `url("${question.image}")`;
+      element.style.backgroundSize = element.id === 'backdrop' ? 'cover' : 'contain';
+      element.style.backgroundPosition = 'center';
+    }
+
+    function updateLoading(progress, text) {
+      $('loadingBar').style.width = Math.max(12, Math.min(100, progress)) + '%';
+      if (text) $('loadingCopy').textContent = text;
+    }
+
+    function preloadImage(url) {
+      return new Promise((resolve) => {
+        const image = new Image();
+        image.onload = () => resolve(true);
+        image.onerror = () => resolve(false);
+        image.src = url;
+      });
+    }
+
+    async function boot() {
+      try {
+        updateLoading(22, '正在读取英雄档案...');
+        const response = await fetch('./assets/heroes.json?v=' + Date.now());
+        if (!response.ok) throw new Error('英雄清单加载失败');
+        const data = await response.json();
+        pool = data.filter((item) => item && item.id && item.name && item.image);
+        const uniqueNames = new Set(pool.map((item) => item.name));
+        if (uniqueNames.size < GAME_SIZE) throw new Error('可用英雄不足');
+
+        $('poolSize').textContent = uniqueNames.size;
+        $('bestScore').textContent = Number(localStorage.getItem('dotaFogBest') || 0).toLocaleString();
+        $('challengeNo').textContent = 'DAILY CHALLENGE · #' + String(dailyNumber()).padStart(3, '0');
+
+        updateLoading(45, '正在随机本局英雄...');
+        rounds = pickUniqueNames(pool, GAME_SIZE);
+        const preloadResults = [];
+        for (let i = 0; i < rounds.length; i++) {
+          preloadResults.push(await preloadImage(rounds[i].image));
+          updateLoading(45 + ((i + 1) / rounds.length) * 48, `正在载入英雄素材 ${i + 1}/${rounds.length}...`);
+        }
+        if (preloadResults.every((value) => !value)) throw new Error('英雄图片全部加载失败');
+
+        updateLoading(100, '真视校准完成');
+        startSession(false);
+        setTimeout(() => $('loading').classList.add('hidden'), 280);
+      } catch (error) {
+        console.error(error);
+        updateLoading(100, '资源加载失败，请刷新页面重试');
+        $('loadingBar').style.background = '#b53b2d';
       }
     }
-    function startSession(){rounds=pickUniqueNames(pool,GAME_SIZE);round=0;totalScore=0;streak=0;results=[];renderRound()}
-    function renderRound(){
-      const q=rounds[round];attempt=0;currentScore=1000;seconds=45;hintUsed=false;answered=false;
-      root.style.setProperty('--reveal',REVEAL[0]+'px');setFogPoint(pickFogPoint());
-      applyVisual($('backdrop'),q);applyVisual($('portrait'),q);
-      $('progress').textContent=`${round+1} / ${GAME_SIZE}`;$('score').textContent='1,000';$('streak').textContent=streak;$('timer').textContent='45s';$('visible').textContent=VISIBLE[0];$('attemptLabel').textContent='第 1 次猜测';$('hint').innerHTML='<b>先知提示：</b>暂未使用真视。越早答对，分数越高。';$('hintBtn').disabled=false;$('skipBtn').disabled=false;
-      renderDots();renderOptions(q);clearInterval(timer);timer=setInterval(tick,1000);
+
+    async function startSession(repick = true) {
+      clearInterval(timer);
+      if (repick) {
+        rounds = pickUniqueNames(pool, GAME_SIZE);
+        await Promise.all(rounds.map((item) => preloadImage(item.image)));
+      }
+      round = 0;
+      totalScore = 0;
+      streak = 0;
+      results = [];
+      renderRound();
     }
-    function renderDots(){$('dots').innerHTML=Array.from({length:5},(_,i)=>`<i class="${i<attempt?'used':''}"></i>`).join('')}
-    function renderOptions(q){
-      const decoys=pickUniqueNames(pool.filter(x=>x.id!==q.id),5,q.name),options=shuffle([q,...decoys]);
-      $('options').innerHTML=options.map((x,i)=>`<button class="option" data-id="${x.id}"><span>${x.name}</span><kbd>${i+1}</kbd></button>`).join('');
-      $('options').querySelectorAll('.option').forEach(btn=>btn.onclick=()=>guess(btn,btn.dataset.id));
+
+    function renderRoundStrip() {
+      $('roundStrip').innerHTML = Array.from({ length: GAME_SIZE }, (_, index) => {
+        let state = '';
+        if (index === round && !answered) state = 'current';
+        if (index < results.length) state = results[index].correct ? 'success' : 'failed';
+        return `<div class="round-node ${state}"><span>第 ${index + 1} 关</span></div>`;
+      }).join('');
     }
-    function tick(){if(answered)return;seconds--;currentScore=Math.max(100,currentScore-2);$('timer').textContent=seconds+'s';$('score').textContent=currentScore.toLocaleString();if(seconds<=0)finish(false,true)}
-    function guess(btn,id){
-      if(answered||btn.classList.contains('wrong'))return;
-      const q=rounds[round];
-      if(id===q.id){btn.classList.add('correct');finish(true,false);return}
-      attempt++;currentScore=Math.max(100,currentScore-150);btn.classList.add('wrong');btn.disabled=true;
-      const lv=Math.min(attempt,REVEAL.length-1);root.style.setProperty('--reveal',REVEAL[lv]+'px');moveFogPoint();$('visible').textContent=VISIBLE[lv];$('score').textContent=currentScore.toLocaleString();$('attemptLabel').textContent=`第 ${Math.min(attempt+1,5)} 次猜测`;renderDots();toast('回答错误，视野扩大并转移到新的迷雾点位。');if(attempt>=5)setTimeout(()=>finish(false,false),400);
+
+    function renderRound() {
+      const question = rounds[round];
+      attempt = 0;
+      currentScore = 1000;
+      seconds = ROUND_TIME;
+      hintUsed = false;
+      answered = false;
+
+      $('stage').classList.remove('success');
+      $('timerCard').classList.remove('alert');
+      root.style.setProperty('--reveal', REVEAL[0] + 'px');
+      setFogPoint(pickFogPoint());
+      applyVisual($('backdrop'), question);
+      applyVisual($('portrait'), question);
+
+      $('progress').textContent = `${round + 1} / ${GAME_SIZE}`;
+      $('score').textContent = '1,000';
+      $('streak').textContent = streak;
+      $('timer').textContent = ROUND_TIME + 's';
+      $('visible').textContent = VISIBLE[0];
+      $('attemptLabel').textContent = '第 1 次猜测';
+      $('visionState').textContent = '离散侦察点';
+      $('positionTip').textContent = '侦察位置已锁定';
+      $('footTip').textContent = '猜错一次，扩大视野并切换到另一处侦察点';
+      $('hint').innerHTML = '<b>先知提示：</b>暂未使用真视。越早答对，分数越高。';
+      $('hintBtn').disabled = false;
+      $('skipBtn').disabled = false;
+
+      renderDots();
+      renderOptions(question);
+      renderRoundStrip();
+      clearInterval(timer);
+      timer = setInterval(tick, 1000);
     }
-    function useHint(){if(hintUsed||answered)return;hintUsed=true;currentScore=Math.max(100,currentScore-120);$('score').textContent=currentScore.toLocaleString();$('hint').innerHTML=`<b>真视生效：</b>${rounds[round].hint}`;$('hintBtn').disabled=true;toast('真视已开启，本题扣除 120 分。')}
-    function finish(correct,timedOut){
-      if(answered)return;answered=true;clearInterval(timer);const q=rounds[round];root.style.setProperty('--reveal',REVEAL.at(-1)+'px');$('visible').textContent='100%';
-      if(correct){totalScore+=currentScore;streak++}else{currentScore=0;streak=0}
-      $('score').textContent=currentScore.toLocaleString();$('streak').textContent=streak;results.push({correct,score:currentScore});setTimeout(()=>showResult(q,correct,timedOut),350);
+
+    function renderDots() {
+      $('dots').innerHTML = Array.from({ length: 5 }, (_, index) => `<i class="${index < attempt ? 'used' : ''}"></i>`).join('');
     }
-    function showResult(q,correct,timedOut){
-      applyVisual($('resultImg'),q);const last=round===GAME_SIZE-1;
-      $('resultBody').innerHTML=`<div class="kicker">${correct?'VISION CONFIRMED · 识破迷雾':timedOut?'TIME OUT · 视野消失':'FAILED · 云玩家警告'}</div><h3>${correct?q.name:'答案：'+q.name}</h3><p>${correct?q.roast:'你成功避开了正确答案。'+q.roast}</p><div class="stats"><div><span>本题得分</span><strong>${currentScore}</strong></div><div><span>猜测次数</span><strong>${correct?attempt+1:'—'}</strong></div><div><span>英雄池剩余</span><strong>${GAME_SIZE-round-1}</strong></div></div><button class="btn primary" style="width:100%" id="nextBtn">${last?'查看今日战绩':'进入下一题'}</button>`;
-      $('modal').classList.add('show');$('nextBtn').onclick=()=>{$('modal').classList.remove('show');if(last)showFinal();else{round++;setTimeout(renderRound,180)}};
+
+    function renderOptions(question) {
+      const decoys = pickUniqueNames(pool.filter((item) => item.id !== question.id), 5, question.name);
+      const options = shuffle([question, ...decoys]);
+      $('options').innerHTML = options.map((item, index) => `
+        <button class="option" data-id="${item.id}">
+          <span>${item.name}</span><kbd>${index + 1}</kbd>
+        </button>
+      `).join('');
+      $('options').querySelectorAll('.option').forEach((button) => {
+        button.addEventListener('click', () => guess(button, button.dataset.id));
+      });
     }
-    function showFinal(){
-      const correct=results.filter(x=>x.correct).length;applyVisual($('resultImg'),rounds[0]);
-      $('resultBody').innerHTML=`<div class="kicker">DAILY CHALLENGE COMPLETE</div><h3>今日视野评级</h3><div class="end">${results.map(x=>`<span>${x.correct?'✓':'×'}</span>`).join('')}</div><p>本局随机英雄：${rounds.map(x=>x.name).join('、')}。你答对 ${correct}/${GAME_SIZE} 题，总得分 <b style="color:#d8b56a">${totalScore.toLocaleString()}</b>。</p><button class="btn primary" style="width:100%" id="restartBtn">重新随机 5 名英雄</button>`;
-      $('modal').classList.add('show');$('restartBtn').onclick=()=>{$('modal').classList.remove('show');startSession()};
+
+    function updateScore() {
+      $('score').textContent = currentScore.toLocaleString();
     }
-    function toast(t){const el=$('toast');el.textContent=t;el.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.remove('show'),1700)}
-    $('hintBtn').onclick=useHint;$('skipBtn').onclick=()=>finish(false,false);
-    document.addEventListener('keydown',e=>{const n=Number(e.key);if(n>=1&&n<=6&&!answered){const btn=$('options').querySelectorAll('.option')[n-1];if(btn)btn.click()}});
+
+    function tick() {
+      if (answered) return;
+      seconds--;
+      currentScore = Math.max(100, currentScore - 3);
+      $('timer').textContent = seconds + 's';
+      updateScore();
+      if (seconds <= 10) $('timerCard').classList.add('alert');
+      if (seconds <= 0) finish(false, true);
+    }
+
+    function showFloat(text, bonus = false) {
+      const element = $('floatScore');
+      element.textContent = text;
+      element.classList.toggle('bonus', bonus);
+      element.classList.remove('show');
+      void element.offsetWidth;
+      element.classList.add('show');
+      setTimeout(() => element.classList.remove('show'), 900);
+    }
+
+    function disableOptions(correctId = '') {
+      $('options').querySelectorAll('.option').forEach((button) => {
+        button.disabled = true;
+        if (correctId && button.dataset.id !== correctId && !button.classList.contains('wrong')) button.classList.add('dimmed');
+      });
+    }
+
+    function guess(button, id) {
+      if (answered || button.classList.contains('wrong')) return;
+      const question = rounds[round];
+      if (id === question.id) {
+        const streakBonus = Math.min(streak * 25, 100);
+        if (streakBonus > 0) {
+          currentScore += streakBonus;
+          showFloat('连胜 +' + streakBonus, true);
+          updateScore();
+        }
+        button.classList.add('correct');
+        disableOptions(question.id);
+        $('stage').classList.add('success');
+        finish(true, false);
+        return;
+      }
+
+      attempt++;
+      currentScore = Math.max(100, currentScore - 150);
+      button.classList.add('wrong');
+      button.disabled = true;
+      const level = Math.min(attempt, REVEAL.length - 1);
+      root.style.setProperty('--reveal', REVEAL[level] + 'px');
+      moveFogPoint();
+      $('visible').textContent = VISIBLE[level];
+      $('attemptLabel').textContent = `第 ${Math.min(attempt + 1, 5)} 次猜测`;
+      $('visionState').textContent = `视野等级 ${level + 1}`;
+      updateScore();
+      renderDots();
+      showFloat('−150');
+      toast('回答错误：视野扩大，并转移到新的侦察点。');
+      if (attempt >= 5) setTimeout(() => finish(false, false), 430);
+    }
+
+    function useHint() {
+      if (hintUsed || answered) return;
+      hintUsed = true;
+      currentScore = Math.max(100, currentScore - 120);
+      updateScore();
+      $('hint').innerHTML = `<b>真视生效：</b>${rounds[round].hint}`;
+      $('hintBtn').disabled = true;
+      showFloat('−120');
+      toast('已使用真视，本题扣除 120 分。');
+    }
+
+    function finish(correct, timedOut) {
+      if (answered) return;
+      answered = true;
+      clearInterval(timer);
+      const question = rounds[round];
+      root.style.setProperty('--reveal', REVEAL.at(-1) + 'px');
+      $('visible').textContent = '100%';
+      $('visionState').textContent = '真视已开启';
+      $('positionTip').textContent = '英雄已完全揭晓';
+      $('hintBtn').disabled = true;
+      $('skipBtn').disabled = true;
+      disableOptions(correct ? question.id : '');
+
+      if (correct) {
+        totalScore += currentScore;
+        streak++;
+      } else {
+        currentScore = 0;
+        streak = 0;
+      }
+      updateScore();
+      $('streak').textContent = streak;
+      results.push({ correct, score: currentScore, attempts: correct ? attempt + 1 : 0, name: question.name });
+      renderRoundStrip();
+      setTimeout(() => showResult(question, correct, timedOut), 520);
+    }
+
+    function showResult(question, correct, timedOut) {
+      applyVisual($('resultImg'), question);
+      const last = round === GAME_SIZE - 1;
+      const title = correct ? question.name : '答案：' + question.name;
+      const kicker = correct
+        ? 'VISION CONFIRMED · 识破迷雾'
+        : timedOut
+          ? 'TIME OUT · 视野消失'
+          : 'FAILED · 云玩家警告';
+      const copy = correct ? question.roast : '你成功避开了正确答案。' + question.roast;
+      $('resultBody').innerHTML = `
+        <div class="kicker">${kicker}</div>
+        <h3>${title}</h3>
+        <p>${copy}</p>
+        <div class="stats">
+          <div><span>本题得分</span><strong>${currentScore}</strong></div>
+          <div><span>猜测次数</span><strong>${correct ? attempt + 1 : '—'}</strong></div>
+          <div><span>剩余关卡</span><strong>${GAME_SIZE - round - 1}</strong></div>
+        </div>
+        <button class="btn primary" style="width:100%" id="nextBtn">${last ? '查看今日战绩' : '进入下一题'}</button>
+      `;
+      $('modal').classList.add('show');
+      $('modal').setAttribute('aria-hidden', 'false');
+      $('nextBtn').onclick = () => {
+        $('modal').classList.remove('show');
+        $('modal').setAttribute('aria-hidden', 'true');
+        if (last) showFinal();
+        else {
+          round++;
+          setTimeout(renderRound, 180);
+        }
+      };
+    }
+
+    function buildShareText() {
+      const no = String(dailyNumber()).padStart(3, '0');
+      const blocks = results.map((item) => item.correct ? `🟩${item.attempts}` : '🟥').join(' ');
+      return `战争迷雾 #${no}\n${blocks}\n答对 ${results.filter((item) => item.correct).length}/${GAME_SIZE} · ${totalScore} 分\n英雄池 ${new Set(pool.map((item) => item.name)).size}`;
+    }
+
+    async function shareResult() {
+      const text = buildShareText();
+      try {
+        if (navigator.share) {
+          await navigator.share({ title: '战争迷雾', text });
+          return;
+        }
+        if (navigator.clipboard) {
+          await navigator.clipboard.writeText(text);
+          toast('战绩已复制，可以发给刀友了。');
+          return;
+        }
+        throw new Error('clipboard unavailable');
+      } catch (error) {
+        if (error && error.name === 'AbortError') return;
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        textarea.remove();
+        toast('战绩已复制，可以发给刀友了。');
+      }
+    }
+
+    function showFinal() {
+      const correctCount = results.filter((item) => item.correct).length;
+      const oldBest = Number(localStorage.getItem('dotaFogBest') || 0);
+      const newBest = Math.max(oldBest, totalScore);
+      localStorage.setItem('dotaFogBest', String(newBest));
+      $('bestScore').textContent = newBest.toLocaleString();
+      $('resultImg').style.backgroundImage = 'radial-gradient(circle at 50% 25%, rgba(216,181,106,.22), transparent 28%), linear-gradient(135deg, #3c1511, #0d1012 62%)';
+      $('resultImg').style.backgroundSize = 'cover';
+      $('resultBody').innerHTML = `
+        <div class="kicker">DAILY CHALLENGE COMPLETE</div>
+        <h3>${correctCount >= 4 ? '真视先知' : correctCount >= 2 ? '高地观察员' : '战争迷雾受害者'}</h3>
+        <div class="end">
+          ${results.map((item) => `<span class="${item.correct ? '' : 'fail'}">${item.correct ? '✓ ' + item.attempts + '猜' : '×'}</span>`).join('')}
+        </div>
+        <p>你答对了 <b style="color:#d8b56a">${correctCount}/${GAME_SIZE}</b> 题，总得分 <b style="color:#d8b56a">${totalScore.toLocaleString()}</b>${totalScore >= oldBest && totalScore > 0 ? '，刷新了本机最高纪录。' : '。'}</p>
+        <div class="result-actions">
+          <button class="btn gold-btn" id="shareBtn">分享战绩</button>
+          <button class="btn primary" id="restartBtn">重新随机 5 名英雄</button>
+        </div>
+      `;
+      $('modal').classList.add('show');
+      $('modal').setAttribute('aria-hidden', 'false');
+      $('shareBtn').onclick = shareResult;
+      $('restartBtn').onclick = async () => {
+        $('modal').classList.remove('show');
+        $('modal').setAttribute('aria-hidden', 'true');
+        $('loading').classList.remove('hidden');
+        updateLoading(30, '正在重新随机英雄...');
+        await startSession(true);
+        updateLoading(100, '新一局准备完成');
+        setTimeout(() => $('loading').classList.add('hidden'), 220);
+      };
+    }
+
+    function toast(text) {
+      const element = $('toast');
+      element.textContent = text;
+      element.classList.add('show');
+      clearTimeout(toast.timer);
+      toast.timer = setTimeout(() => element.classList.remove('show'), 1900);
+    }
+
+    $('hintBtn').onclick = useHint;
+    $('skipBtn').onclick = () => finish(false, false);
+    document.addEventListener('keydown', (event) => {
+      const index = Number(event.key);
+      if (index >= 1 && index <= 6 && !answered) {
+        const button = $('options').querySelectorAll('.option')[index - 1];
+        if (button) button.click();
+      }
+    });
+
     boot();
   </script>
 </body>
