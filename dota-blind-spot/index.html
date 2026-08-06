@@ -394,14 +394,6 @@
     .nav-item.utility { cursor: pointer; }
     .nav-item.utility:hover { color: #fff; border-color: rgba(216,181,106,.28); background: rgba(216,181,106,.05); }
 
-    .clue-rail { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; margin-bottom: 10px; }
-    .clue-card { min-height: 56px; padding: 9px 10px; overflow: hidden; border: 1px solid rgba(255,255,255,.07); border-radius: 8px; background: rgba(255,255,255,.018); }
-    .clue-card small { display: block; margin-bottom: 5px; color: #666e73; font-size: 9px; letter-spacing: .06em; }
-    .clue-card strong { display: block; overflow: hidden; color: #5e666b; font-size: 11px; line-height: 1.35; text-overflow: ellipsis; white-space: nowrap; }
-    .clue-card.open { border-color: rgba(216,181,106,.25); background: rgba(216,181,106,.055); animation: clueOpen .34s ease; }
-    .clue-card.open small { color: #a68f61; }
-    .clue-card.open strong { color: #e0cfaa; white-space: normal; }
-    @keyframes clueOpen { from { opacity: .35; transform: translateY(4px); } }
 
     .guess-history { min-height: 32px; display: flex; align-items: center; gap: 6px; overflow-x: auto; margin-bottom: 9px; scrollbar-width: none; }
     .guess-history::-webkit-scrollbar { display: none; }
@@ -527,8 +519,6 @@
     @media (max-width: 900px) {
       .nav-item.utility { display: inline-flex !important; padding: 8px 9px; }
       .nav-item.disabled { display: none !important; }
-      .clue-rail { grid-template-columns: 1fr; }
-      .clue-card { min-height: 48px; }
     }
     @media (max-width: 560px) {
       .nav-item.utility { font-size: 11px; }
@@ -563,7 +553,7 @@
         <button class="nav-item disabled" title="后续开放" disabled>好友房</button>
         <button class="nav-item utility" id="helpBtn">玩法</button>
         <button class="nav-item utility" id="statsBtn">战绩</button>
-        <span class="version">BETA 0.6</span>
+        <span class="version">BETA 0.7</span>
       </nav>
     </header>
 
@@ -571,7 +561,7 @@
       <div>
         <div class="eyebrow" id="challengeNo">DAILY CHALLENGE · #001</div>
         <h1>你真的认得<br>这些英雄吗？</h1>
-        <p>每局随机抽取 5 名不同英雄。可以直接选择候选英雄，也可以输入全题库英雄名；每次答错都会扩大视野、转移侦察点，并逐步解锁英雄资料。</p>
+        <p>每局随机抽取 5 名不同英雄。可以直接选择候选英雄，也可以输入全题库英雄名；每次答错只会扩大视野并转移侦察点，不提供属性或英雄特征提示。</p>
       </div>
       <div class="intro-meta">
         <div class="meta-card"><span>英雄题库</span><strong id="poolSize">—</strong></div>
@@ -619,9 +609,8 @@
           <span id="attemptLabel" style="color:#747b7f;font-size:11px">第 1 次猜测</span>
         </div>
         <div class="answer">
-          <div class="type">英雄辨识</div>
+          <div class="type">纯图挑战</div>
           <div class="prompt">迷雾中是哪一位英雄？</div>
-          <div class="clue-rail" id="clueRail"></div>
           <div class="guess-history" id="guessHistory"><span class="guess-empty">错误猜测会记录在这里</span></div>
           <div class="guess-form">
             <input class="hero-input" id="heroInput" list="heroNames" placeholder="输入任意英雄名，回车提交" autocomplete="off" />
@@ -629,9 +618,9 @@
             <button class="btn" id="submitGuessBtn">提交</button>
           </div>
           <div class="options" id="options"></div>
-          <div class="hint" id="hint"><b>先知提示：</b>暂未使用真视。越早答对，分数越高。</div>
+          <div class="hint" id="hint"><b>规则：</b>只根据画面判断英雄。真视仅扩大一次可视范围，不提供文字线索。</div>
           <div class="actions">
-            <button class="btn" id="hintBtn">使用真视 −120</button>
+            <button class="btn" id="hintBtn">扩大视野 −120</button>
             <button class="btn primary" id="skipBtn">放弃并揭晓</button>
           </div>
         </div>
@@ -718,31 +707,6 @@
     }
 
 
-    function deriveClues(question) {
-      const hint = question.hint || '';
-      const attributeMatch = hint.match(/(力量|敏捷|智力|全才)型/);
-      const attackMatch = hint.match(/(近战|远程)英雄/);
-      const attribute = attributeMatch ? attributeMatch[1] : '未知';
-      const attack = attackMatch ? attackMatch[1] : '未知';
-      let feature = hint.replace(/^(力量|敏捷|智力|全才)型(近战|远程)英雄[，,]?\s*/, '');
-      if (!feature || feature === hint) feature = hint || '暂无额外英雄档案';
-      return [
-        { label: '主属性', value: attribute },
-        { label: '攻击方式', value: attack },
-        { label: '英雄特征', value: feature }
-      ];
-    }
-
-    function renderClues(revealAll = false) {
-      const question = rounds[round];
-      if (!question) return;
-      const clues = deriveClues(question);
-      const unlocked = revealAll ? clues.length : Math.min(attempt, clues.length);
-      $('clueRail').innerHTML = clues.map((clue, index) => {
-        const open = index < unlocked;
-        return `<div class="clue-card ${open ? 'open' : ''}"><small>线索 ${index + 1} · ${clue.label}</small><strong>${open ? clue.value : '等待错误后解锁'}</strong></div>`;
-      }).join('');
-    }
 
     function renderGuessHistory() {
       $('guessHistory').innerHTML = wrongGuesses.length
@@ -792,9 +756,9 @@
       openInfo('玩法说明', `
         <div class="how-grid">
           <div class="how-item"><div class="how-number">1</div><div><strong>观察极小视野</strong>首轮只会显示英雄原画的一小块，侦察点不能手动移动。</div></div>
-          <div class="how-item"><div class="how-number">2</div><div><strong>错误会带来新信息</strong>每次猜错都会扣 150 分、扩大圆形视野、切换到较远点位，并解锁一条英雄资料。</div></div>
+          <div class="how-item"><div class="how-number">2</div><div><strong>只增加视觉信息</strong>每次猜错都会扣 150 分、扩大圆形视野并切换到较远点位，不会提供主属性或英雄特征。</div></div>
           <div class="how-item"><div class="how-number">3</div><div><strong>两种答题方式</strong>可以点击六个快捷候选，也可以输入题库中的任意英雄名，适合更熟悉 DOTA 的玩家。</div></div>
-          <div class="how-item"><div class="how-number">4</div><div><strong>少猜、少提示、快作答</strong>真视会直接解锁全部资料，但扣除 120 分；连胜还能获得额外奖励。</div></div>
+          <div class="how-item"><div class="how-number">4</div><div><strong>少猜、少辅助、快作答</strong>真视只会额外扩大一级画面，并扣除 120 分；连胜还能获得额外奖励。</div></div>
         </div>
         <div class="info-note">键盘快捷键：数字 1—6 选择候选；输入框中按 Enter 提交；按 / 可快速聚焦输入框。</div>
       `);
@@ -986,7 +950,7 @@
       $('visionState').textContent = '离散侦察点';
       $('positionTip').textContent = '侦察位置已锁定';
       $('footTip').textContent = '猜错一次，扩大视野并切换到另一处侦察点';
-      $('hint').innerHTML = '<b>先知提示：</b>暂未使用真视。越早答对，分数越高。';
+      $('hint').innerHTML = '<b>规则：</b>只根据画面判断英雄。真视仅扩大一次可视范围，不提供文字线索。';
       $('hintBtn').disabled = false;
       $('skipBtn').disabled = false;
       $('skipBtn').textContent = '放弃并揭晓';
@@ -995,7 +959,6 @@
       $('heroInput').value = '';
 
       renderDots();
-      renderClues();
       renderGuessHistory();
       renderOptions(question);
       renderRoundStrip();
@@ -1093,23 +1056,31 @@
       $('visionState').textContent = `视野等级 ${level + 1}`;
       updateScore();
       renderDots();
-      renderClues();
       renderGuessHistory();
       showFloat('−150');
-      toast(`回答错误：已解锁第 ${Math.min(attempt, 3)} 条资料，并转移侦察点。`);
+      toast('回答错误：视野扩大，并转移到新的侦察点。');
       if (attempt >= 5) setTimeout(() => finish(false, false), 430);
     }
 
     function useHint() {
       if (hintUsed || answered) return;
+      const currentLevel = Math.min(attempt, REVEAL.length - 2);
+      const level = Math.min(currentLevel + 1, REVEAL.length - 2);
+      if (level === currentLevel) {
+        toast('当前辅助视野已经达到上限。');
+        return;
+      }
       hintUsed = true;
       currentScore = Math.max(100, currentScore - 120);
+      root.style.setProperty('--reveal', REVEAL[level] + 'px');
+      $('visible').textContent = VISIBLE[level];
+      $('visionState').textContent = `真视等级 ${level + 1}`;
+      moveFogPoint();
       updateScore();
-      $('hint').innerHTML = `<b>真视生效：</b>${rounds[round].hint}`;
-      renderClues(true);
+      $('hint').innerHTML = '<b>真视已使用：</b>已额外扩大一级可视范围，不提供任何文字线索。';
       $('hintBtn').disabled = true;
       showFloat('−120');
-      toast('已使用真视，本题扣除 120 分。');
+      toast('真视仅扩大视野，本题扣除 120 分。');
     }
 
     function finish(correct, timedOut) {
@@ -1156,7 +1127,7 @@
         <div class="stats">
           <div><span>本题得分</span><strong>${currentScore}</strong></div>
           <div><span>猜测次数</span><strong>${correct ? attempt + 1 : '—'}</strong></div>
-          <div><span>已解锁线索</span><strong>${hintUsed ? 3 : Math.min(attempt, 3)}/3</strong></div>
+          <div><span>使用真视</span><strong>${hintUsed ? '是' : '否'}</strong></div>
         </div>
         <button class="btn primary" style="width:100%" id="nextBtn">${last ? '查看今日战绩' : '进入下一题'}</button>
       `;
