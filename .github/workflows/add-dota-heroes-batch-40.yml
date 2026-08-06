@@ -1,0 +1,58 @@
+name: Add DOTA Hero Batch 31-40
+
+on:
+  push:
+    paths:
+      - '.github/workflows/add-dota-heroes-batch-40.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Generate assets and update manifest
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('dota-blind-spot'); out=root/'assets'/'heroes-generated'; out.mkdir(parents=True,exist_ok=True)
+          p=root/'assets'/'heroes.json'; heroes=json.loads(p.read_text(encoding='utf-8'))
+          existing_ids={h['id'] for h in heroes}; existing_names={h['name'] for h in heroes}
+          batch=[
+          ('earthshaker','earthshaker','撼地者','#8b3f22','#f1a34b','#ffd08a','裂地战锤','力量型近战英雄，牛头战士造型，擅长制造沟壑并以回音击震碎战场。','大地都震了三次，你的答案还是纹丝不动。'),
+          ('puck','puck','帕克','#4f4d9a','#d187ff','#7ef7ff','仙龙双翼','智力型远程英雄，外形如梦幻仙龙，能够相位转移并用梦境缠绕敌人。','它已经躲进异次元，你的正确答案也跟着消失了。'),
+          ('rubick','rubick','拉比克','#174a37','#43d36d','#d8ff55','窃法权杖','智力型远程辅助，绿色斗篷与法杖醒目，最著名的能力是窃取敌方技能。','技能都偷到了，唯独没偷到你的正确答案。'),
+          ('faceless_void','faceless-void','虚空假面','#241246','#7650c7','#c49bff','无面时空','敏捷型近战核心，紫色无面身体，能够操控时间并制造时间结界。','时间都暂停了，你还是没来得及认出来。'),
+          ('luna','luna','露娜','#152449','#547bd8','#d9ecff','月刃骑士','敏捷型远程核心，银蓝战甲并骑乘黑豹，以月刃和月蚀闻名。','月光这么亮，仍然没照见你的答案。'),
+          ('slark','slark','斯拉克','#0c3b43','#16a7a0','#9affd9','暗影鱼人','敏捷型近战英雄，深海鱼人外形，擅长突袭、偷取属性并藏入暗影。','小鱼人已经溜走，顺便带走了你的判断力。'),
+          ('ember_spirit','ember-spirit','灰烬之灵','#5a1e16','#e35f24','#ffd15b','烈焰双刃','敏捷型近战英雄，火焰武者造型，使用双刀与残焰高速穿梭战场。','残焰飞了满屏，你却没跟上正确答案。'),
+          ('monkey_king','monkey-king','齐天大圣','#4a2410','#c86b21','#f8d45b','如意金箍','敏捷型近战英雄，猴王造型并手持长棍，能够腾跃树梢和召唤猴兵。','金箍棒已经伸到脸上，你还在猜别的英雄。'),
+          ('dawnbreaker','dawnbreaker','破晓辰星','#6a3217','#e99a32','#fff0a3','星辉巨锤','力量型近战英雄，金色天界战士，手持巨大战锤并能跨地图支援队友。','天都亮了，你的答案还停留在黑夜。'),
+          ('mars','mars','玛尔斯','#5b1718','#bd3932','#ffc75c','战神枪盾','力量型近战英雄，红金盔甲，手持长矛和巨盾并能创造竞技场。','竞技场都搭好了，你却认错了主角。')]
+          def make_svg(x):
+            i,slug,name,c1,c2,accent,sig,hint,roast=x
+            return f'''<svg xmlns="http://www.w3.org/2000/svg" width="960" height="720" viewBox="0 0 960 720"><defs><radialGradient id="b"><stop stop-color="{c2}"/><stop offset="1" stop-color="#050607"/></radialGradient><linearGradient id="a"><stop stop-color="{accent}"/><stop offset=".35" stop-color="{c2}"/><stop offset="1" stop-color="{c1}"/></linearGradient><filter id="g"><feGaussianBlur stdDeviation="12" result="x"/><feMerge><feMergeNode in="x"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><rect width="960" height="720" fill="url(#b)"/><g opacity=".22" fill="none" stroke="{accent}" stroke-width="3"><circle cx="480" cy="330" r="250"/><circle cx="480" cy="330" r="190" stroke-dasharray="12 18"/></g><g><path d="M230 700Q260 500 350 420H610Q700 500 730 700Z" fill="#101316" stroke="{c2}" stroke-width="9"/><path d="M320 490L395 418L480 458L565 418L640 490L610 700H350Z" fill="url(#a)"/><ellipse cx="480" cy="285" rx="132" ry="155" fill="#17191c" stroke="{accent}" stroke-width="10"/><path d="M365 245Q480 90 595 245L565 360Q480 415 395 360Z" fill="url(#a)"/><path d="M395 272L456 286L432 318L380 301ZM565 272L504 286L528 318L580 301Z" fill="{accent}" filter="url(#g)"/><path d="M300 620L150 335L205 302L392 555ZM660 620L810 335L755 302L568 555Z" fill="{c2}" stroke="{accent}" stroke-width="8"/></g><g text-anchor="middle" font-family="Arial,Microsoft YaHei,sans-serif"><text x="480" y="625" fill="#fff" font-size="44" font-weight="700">{name}</text><text x="480" y="669" fill="{accent}" font-size="23" letter-spacing="4">{sig}</text></g></svg>'''
+          added=[]
+          for x in batch:
+            i,slug,name,*_=x
+            if i in existing_ids or name in existing_names: continue
+            (out/f'{slug}.svg').write_text(make_svg(x),encoding='utf-8')
+            heroes.append({'id':i,'name':name,'image':f'./assets/heroes-generated/{slug}.svg','hint':x[-2],'roast':x[-1]})
+            existing_ids.add(i); existing_names.add(name); added.append(name)
+          if len(heroes)>60: raise SystemExit(len(heroes))
+          p.write_text(json.dumps(heroes,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          print('added',added,'total',len(heroes))
+          PY
+      - name: Commit generated files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add dota-blind-spot/assets/heroes-generated dota-blind-spot/assets/heroes.json
+          git diff --cached --quiet || (git commit -m "feat: expand DOTA hero pool to 40 records" && git push)
