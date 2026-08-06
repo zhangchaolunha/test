@@ -1,0 +1,65 @@
+name: Fix DOTA black hero reveal areas
+
+on:
+  push:
+    paths:
+      - '.github/workflows/fix-dota-black-reveal.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Improve hero framing and fog visibility
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('dota-blind-spot/index.html')
+          text = path.read_text(encoding='utf-8')
+
+          replacements = {
+              "filter: blur(25px) brightness(0.34) saturate(0.86);":
+                  "filter: blur(22px) brightness(0.58) saturate(0.96);",
+              "background-size: contain;\n      filter: saturate(1.02) contrast(1.05) brightness(1.07);":
+                  "background-size: cover;\n      background-position: center 36%;\n      filter: saturate(1.12) contrast(1.10) brightness(1.32);",
+              "filter: saturate(1.12) contrast(1.08) brightness(1.13);":
+                  "filter: saturate(1.20) contrast(1.12) brightness(1.38);",
+              "rgba(4, 6, 7, 0.978);":
+                  "rgba(4, 6, 7, 0.955);",
+              "const REVEAL = [28, 44, 68, 100, 146, 620];":
+                  "const REVEAL = [58, 82, 112, 154, 218, 760];",
+              "const VISIBLE = ['02%', '05%', '11%', '22%', '40%', '100%'];":
+                  "const VISIBLE = ['06%', '11%', '19%', '31%', '50%', '100%'];",
+              "      { x: 17, y: 18 }, { x: 50, y: 16 }, { x: 83, y: 18 },\n      { x: 19, y: 48 }, { x: 50, y: 47 }, { x: 81, y: 48 },\n      { x: 17, y: 79 }, { x: 50, y: 81 }, { x: 83, y: 79 },":
+                  "      { x: 34, y: 24 }, { x: 50, y: 22 }, { x: 66, y: 24 },\n      { x: 32, y: 43 }, { x: 50, y: 42 }, { x: 68, y: 43 },\n      { x: 36, y: 61 }, { x: 50, y: 60 }, { x: 64, y: 61 },",
+              "      element.style.backgroundSize = element.id === 'backdrop' ? 'cover' : 'contain';\n      element.style.backgroundPosition = 'center';":
+                  "      element.style.backgroundSize = 'cover';\n      element.style.backgroundPosition = element.id === 'backdrop' ? 'center 40%' : 'center 36%';"
+          }
+
+          changed = 0
+          for old, new in replacements.items():
+              if old in text:
+                  text = text.replace(old, new)
+                  changed += 1
+              else:
+                  print('warning: pattern not found:', old[:90])
+
+          if changed < 7:
+              raise SystemExit(f'only {changed} replacements applied; refusing partial patch')
+
+          path.write_text(text, encoding='utf-8')
+          print('applied replacements:', changed)
+          PY
+
+      - name: Commit page visibility fix
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add dota-blind-spot/index.html
+          git diff --cached --quiet || (git commit -m "fix: prevent black hero reveal areas" && git push)
