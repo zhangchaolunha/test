@@ -278,5 +278,145 @@
     "hint": "力量型近战英雄，红金盔甲，手持长矛和巨盾并能创造竞技场。",
     "roast": "竞技场都搭好了，你却认错了主角。",
     "image": "./assets/heroes-generated/ai-mars.svg"
+  },
+  {
+    "id": "treant_protector",
+    "name": "树精卫士",
+    "hint": "力量型近战辅助，巨大的树人英雄，能隐于树林并用藤蔓保护队友。",
+    "roast": "整片树林都在提醒你，你却只看见了背景。",
+    "image": "./assets/heroes-generated/treant-protector.svg"
+  },
+  {
+    "id": "naga_siren",
+    "name": "娜迦海妖",
+    "hint": "敏捷型近战核心，海族女战士，能够制造幻象并用歌声令战场沉睡。",
+    "roast": "海妖都唱完一首了，你的答案还没醒。",
+    "image": "./assets/heroes-generated/naga-siren.svg"
+  },
+  {
+    "id": "gyrocopter",
+    "name": "矮人直升机",
+    "hint": "敏捷型远程英雄，驾驶武装飞行器，以火箭、机炮和空袭覆盖战场。",
+    "roast": "螺旋桨都快刮到脸了，你还在地面找英雄。",
+    "image": "./assets/heroes-generated/gyrocopter.svg"
+  },
+  {
+    "id": "timbersaw",
+    "name": "伐木机",
+    "hint": "力量型近战英雄，乘坐圆锯机械，擅长在树木之间高速穿梭。",
+    "roast": "锯子已经开工了，你的记忆却还没开机。",
+    "image": "./assets/heroes-generated/timbersaw.svg"
+  },
+  {
+    "id": "keeper_of_the_light",
+    "name": "光之守卫",
+    "hint": "智力型远程辅助，白须老法师骑乘战马，能够蓄力释放强烈光波。",
+    "roast": "光都照到屏幕外了，你还是没看清答案。",
+    "image": "./assets/heroes-generated/keeper-of-the-light.svg"
+  },
+  {
+    "id": "bane",
+    "name": "祸乱之源",
+    "hint": "智力型远程英雄，紫色梦魇生物，擅长削弱敌人并将目标拖入噩梦。",
+    "roast": "这不是做梦，你是真的又猜错了。",
+    "image": "./assets/heroes-generated/bane.svg"
+  },
+  {
+    "id": "razor",
+    "name": "剃刀",
+    "hint": "敏捷型远程英雄，蓝色闪电幽魂，能够连接敌人并持续抽取攻击力。",
+    "roast": "电线都接上了，你的思路还是断路。",
+    "image": "./assets/heroes-generated/razor.svg"
+  },
+  {
+    "id": "warlock",
+    "name": "术士",
+    "hint": "智力型远程辅助，红绿长袍的黑暗法师，能召唤地狱火并链接敌人。",
+    "roast": "地狱火都落地了，你的答案还在读条。",
+    "image": "./assets/heroes-generated/warlock.svg"
+  },
+  {
+    "id": "brewmaster",
+    "name": "酒仙",
+    "hint": "力量型近战英雄，熊猫酒客造型，能够分裂成多个元素战士作战。",
+    "roast": "酒可以喝多，英雄可不能认错。",
+    "image": "./assets/heroes-generated/brewmaster.svg"
+  },
+  {
+    "id": "beastmaster",
+    "name": "兽王",
+    "hint": "力量型近战英雄，野性战士造型，能够召唤野兽侦察并以怒吼控制敌人。",
+    "roast": "野兽们全认出主人了，只有你没有。",
+    "image": "./assets/heroes-generated/beastmaster.svg"
+  },
+  {
+    "id": "witch_doctor",
+    "name": "巫医",
+    "hint": "智力型远程辅助，戴着面具的部族巫师，使用弹射麻痹和死亡守卫。",
+    "roast": "药到病除，但治不好你的认人困难。",
+    "image": "./assets/heroes-generated/witch-doctor.svg"
+  },
+  {
+    "id": "doom",
+    "name": "末日使者",
+    "hint": "力量型近战英雄，燃烧的恶魔领主，能够吞噬野怪并让目标无法施法。",
+    "roast": "末日已经降临，正确答案却没有。",
+    "image": "./assets/heroes-generated/doom.svg"
+  },
+  {
+    "id": "medusa",
+    "name": "美杜莎",
+    "hint": "敏捷型远程核心，蛇发女妖造型，拥有分裂箭、魔法盾和石化凝视。",
+    "roast": "你没被石化，只是答案卡住了。",
+    "image": "./assets/heroes-generated/medusa.svg"
+  },
+  {
+    "id": "wraith_king",
+    "name": "冥魂大帝",
+    "hint": "力量型近战核心，绿色亡灵君王，倒下后通常还能再次复活。",
+    "roast": "他都复活了，你的记忆还没复活。",
+    "image": "./assets/heroes-generated/wraith-king.svg"
+  },
+  {
+    "id": "sand_king",
+    "name": "沙王",
+    "hint": "力量型近战英雄，巨型沙漠蝎子，能钻入沙地并制造大范围地震。",
+    "roast": "沙尘这么大，也不能把答案全埋了。",
+    "image": "./assets/heroes-generated/sand-king.svg"
+  },
+  {
+    "id": "clockwerk",
+    "name": "发条技师",
+    "hint": "力量型近战英雄，身穿机械装甲，以齿轮、照明弹和钩爪切入战场。",
+    "roast": "齿轮已经转了半天，你的思路还没启动。",
+    "image": "./assets/heroes-generated/clockwerk.svg"
+  },
+  {
+    "id": "abaddon",
+    "name": "亚巴顿",
+    "hint": "力量型近战英雄，骑乘幽灵战马，能够施加护盾并在危急时吸收伤害。",
+    "roast": "护盾保住了他，却保不住你的答案。",
+    "image": "./assets/heroes-generated/abaddon.svg"
+  },
+  {
+    "id": "tusk",
+    "name": "巨牙海民",
+    "hint": "力量型近战英雄，来自冰原的海象战士，擅长雪球突进与强力上勾拳。",
+    "roast": "雪球都滚到终点了，你还在起点猜。",
+    "image": "./assets/heroes-generated/tusk.svg"
+  },
+  {
+    "id": "lion",
+    "name": "莱恩",
+    "hint": "智力型远程辅助，恶魔巫师造型，能够穿刺、变羊并释放高爆发死亡一指。",
+    "roast": "死亡一指已经点名，你却叫错了名字。",
+    "image": "./assets/heroes-generated/lion.svg"
+  },
+  {
+    "id": "tinker",
+    "name": "修补匠",
+    "hint": "智力型远程核心，操纵高科技机械，能够激光轰击并反复刷新装备和技能。",
+    "roast": "机器都刷新好了，你的答案还没更新。",
+    "image": "./assets/heroes-generated/tinker.svg"
   }
 ]
